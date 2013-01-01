@@ -73,7 +73,7 @@
     		<compilerarg line="-Xlint:unchecked" />
     		<classpath refid="libs" />
 			<src path="${source.dir}" />
-			<src path="${test.dir}" />
+			<!-- src path="${test.dir}" / -->
     	</javac>
     	<copy todir="${build.dir}">
 			<fileset dir="${source.dir}" includes="**/*.properties" />
