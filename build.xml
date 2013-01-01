@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- ====================================================================== 
+    Copyright (C) 2010-2012 Konstantin Livitski
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the Tote Project License.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    Tote Project License for more details.
+
+    You should find a copy of the Tote Project License in the "tote.txt" file
+    in the LICENSE directory of this package or repository.  If not, see
+    <http://www.livitski.name/projects/tote/license>. If you have any
+    questions or concerns, contact me at <http://www.livitski.name/contact>. 
+     ====================================================================== -->
+<project default="jar">
+	<property name="source.dir" location="${basedir}/src" />
+	<property name="test.dir" location="${basedir}/test" />
+	<property name="build.dir" location="${basedir}/build" />
+	<property name="lib.dir" location="${basedir}/lib" />
+	<property name="dest.jar" location="${basedir}/tote.jar" />
+	<property name="classes.main" value="name.livitski.tote.cli.Launcher" />
+	<property name="version" value="1.04" />
+	<property name="author" value="Konstantin Livitski" />
+	<tstamp>
+		<format property="version.time" pattern="yyMMdd" />
+	</tstamp>
+
+	<path id="libs.bundle">
+		<fileset dir="${lib.dir}">
+			<include name="*.jar" />
+			<exclude name="junit*.jar" />
+		</fileset>
+	</path>
+
+	<path id="libs">
+		<path refid="libs.bundle" />
+		<pathelement location="${lib.dir}/junit.jar" />
+	</path>
+
+    <target name="jar" depends="compile" description="Builds JAR file for the project">
+    	<unjar dest="${build.dir}" overwrite= "false">
+    		<path refid="libs.bundle" />
+    	    <patternset>
+    	        <exclude name="META-INF/**"/>
+    	    </patternset>
+    	</unjar>
+    	<jar destfile="${dest.jar}" basedir="${build.dir}" update="false" duplicate="fail">
+    		<manifest>
+    			<attribute name="Main-Class" value="${classes.main}"/>
+    		    <section name="name/livitski/tote/">
+    		      <attribute name="Specification-Title" value="Tote"/>
+    		      <attribute name="Specification-Version" value="${version}"/>
+    		      <attribute name="Specification-Vendor" value="${author}"/>
+    		      <attribute name="Implementation-Version" value="${version}.${version.time}"/> 
+    		      <attribute name="Implementation-Vendor" value="${author}"/>
+    		    </section>
+    		    <section name="name/livitski/tote/cli/">
+    		      <attribute name="Implementation-Title" value="Tote command-line launcher"/>
+    		      <attribute name="Implementation-Version" value="${version}.${version.time}"/> 
+    		      <attribute name="Implementation-Vendor" value="${author}"/>
+    		    </section>
+    		</manifest>
+    	</jar>
+    </target>
+
+    <target name="compile" description="Compiles the project classes">
+    	<delete dir="${build.dir}" quiet="true" />
+    	<mkdir dir="${build.dir}" />
+    	<javac destdir="${build.dir}" debug="true" source="1.5" target="1.5">
+    		<compilerarg line="-Xlint:unchecked" />
+    		<classpath refid="libs" />
+			<src path="${source.dir}" />
+			<src path="${test.dir}" />
+    	</javac>
+    	<copy todir="${build.dir}">
+			<fileset dir="${source.dir}" includes="**/*.properties" />
+    	</copy>
+    </target>
+
+    <target name="javadoc">
+    	<delete dir="javadoc" quiet="true" />
+    	<mkdir dir="javadoc" />
+        <javadoc access="protected" author="true" classpathref="libs"
+        	destdir="javadoc" doctitle="Tote project"
+        	nodeprecated="false" nodeprecatedlist="false"
+        	noindex="false" nonavbar="false" notree="false"
+        	packagenames="name.livitski.tools,name.livitski.tote.cli,name.livitski.tote.db,name.livitski.tote.db.schema,name.livitski.tote.app,name.livitski.tote.app.sync,name.livitski.tote.app.maint,name.livitski.tote.app.filter,name.livitski.tote.diff,name.livitski.tote.app.info"
+        	source="1.5" sourcepath="test:src" splitindex="true" use="true" version="true">
+            <link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
+        </javadoc>
+    </target>
+</project>
