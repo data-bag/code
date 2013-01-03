@@ -88,7 +88,7 @@
         	nodeprecated="false" nodeprecatedlist="false"
         	noindex="false" nonavbar="false" notree="false"
         	packagenames="name.livitski.tools,name.livitski.tote.cli,name.livitski.tote.db,name.livitski.tote.db.schema,name.livitski.tote.app,name.livitski.tote.app.sync,name.livitski.tote.app.maint,name.livitski.tote.app.filter,name.livitski.tote.diff,name.livitski.tote.app.info"
-        	source="1.5" sourcepath="test:src" splitindex="true" use="true" version="true">
+        	source="1.5" sourcepath="src" splitindex="true" use="true" version="true">
             <link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
         </javadoc>
     </target>
