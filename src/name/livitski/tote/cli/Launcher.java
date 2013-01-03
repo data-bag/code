@@ -1243,7 +1243,8 @@ public class Launcher extends Logging
  {
   PrintStream out = getOutputStream();
   FilterFactory factory = getFilterFactory();
-  String defaultName = factory.defaultFilter(replica.getId()).getName();
+  Number rid = null == replica ? null : replica.getId();
+  String defaultName = factory.defaultFilter(rid).getName();
   for (String name : factory.listFilterNames())
    out.printf("%1$c %2$-77s%n", defaultName.equals(name) ? '*' : ' ',
      name);
