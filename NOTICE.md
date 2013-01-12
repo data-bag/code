@@ -9,7 +9,7 @@
   Tote Project License for more details.
 
   You should find a copy of the Tote Project License in the
-  ["tote.txt" file in the LICENSE directory][dbl]
+  ["data-bag.md" file in the LICENSE directory][dbl]
   of this package or repository.  If not, see
   <http://www.livitski.name/projects/tote/license>. If you have any
   questions or concerns, contact me at <http://www.livitski.name/contact>. 
@@ -19,7 +19,7 @@ The distribution of this software includes unmodified binary redistribution of:
 
 - H2 Database Engine licensed under [Eclipse Public License - Version 1.0][epl]
 
-Please refer to the ["epl.txt" file in the LICENSE directory][epl]
+Please refer to the ["epl.md" file in the LICENSE directory][epl]
 for terms of that license.
 
 -------------------------------------------------------------------------------
@@ -37,10 +37,10 @@ for applicable license terms.
 
 -------------------------------------------------------------------------------
 The distribution of this software includes other components subject to
-[Apache License Version 2.0][alv2]. Please refer to the ["tote.txt"][dbl] and
+[Apache License Version 2.0][alv2]. Please refer to the ["data-bag.md"][dbl] and
 ["apache.txt"][alv2] files in the LICENSE directory for the list of those
 components and applicable license terms.
 
    [dbl]: LICENSE/data-bag.md
-   [alv2]: LICENSE/apache.md
+   [alv2]: LICENSE/apache.txt
    [epl]: LICENSE/epl.md
