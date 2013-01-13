@@ -1382,8 +1382,8 @@ public class Launcher extends Logging
  private static final String[] BANNER = {
    "Tote - shared storage synchronization and change tracking tool, v."
      + Launcher.class.getPackage().getImplementationVersion(),
-   "Copyright 2010-12 Konstantin Livitski and others.",
-   "See file \"LICENSE/tote.txt\" for applicable terms.",
+   "Copyright 2010-13 Konstantin Livitski and others.",
+   "See file \"LICENSE/data-bag.md\" for applicable terms.",
    "" };
 
  private static final String SYNTAX = "java -jar tote.jar [options] command [arguments]";
