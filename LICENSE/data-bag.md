@@ -236,7 +236,7 @@ to that component.
    [alv2]: ./apache.txt "Apache License, Version 2.0"
    [epl]: ./epl.md "Eclipse Public License 1.0"
    [sec-grant]: #sec-grant "Section 2"
-   [sec-amend]:	#sec-amend "Section 3"
+   [sec-amend]: #sec-amend "Section 3"
    [list-noagpl]: #list-noagpl "Section 2, paragraphs (a)-(c)"
    [app-A]: #app-A "Appendix A"
    [app-B]: #app-B "Appendix B"
