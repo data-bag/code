@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.diff;
+package name.livitski.databag.diff;
 
 /**
  * Provides common operators and constants

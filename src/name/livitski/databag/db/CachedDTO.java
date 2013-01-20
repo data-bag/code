@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.db;
+package name.livitski.databag.db;
 
 /**
  * Enables caching of objects that represent database records in memory.

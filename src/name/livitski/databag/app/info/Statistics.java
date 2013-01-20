@@ -15,14 +15,14 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.app.info;
+package name.livitski.databag.app.info;
 
-import name.livitski.tote.app.ConfigurableService;
-import name.livitski.tote.app.Configuration;
-import name.livitski.tote.db.DBException;
-import name.livitski.tote.db.Manager;
-import name.livitski.tote.db.schema.FileDAO;
-import name.livitski.tote.db.schema.ReplicaDTO;
+import name.livitski.databag.app.ConfigurableService;
+import name.livitski.databag.app.Configuration;
+import name.livitski.databag.db.DBException;
+import name.livitski.databag.db.Manager;
+import name.livitski.databag.db.schema.FileDAO;
+import name.livitski.databag.db.schema.ReplicaDTO;
 
 /**
  * Provides statistical information about the shared storage.

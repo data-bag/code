@@ -29,7 +29,7 @@
  *  to You under the same terms.
  */
 
-package name.livitski.tote.app.filter;
+package name.livitski.databag.app.filter;
 
 import java.io.File;
 import java.io.IOException;

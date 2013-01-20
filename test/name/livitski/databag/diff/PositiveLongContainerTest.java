@@ -15,9 +15,9 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.diff;
+package name.livitski.databag.diff;
 
-import static name.livitski.tote.diff.PositiveLongContainer.MAX_ENCODED_SIZE;
+import static name.livitski.databag.diff.PositiveLongContainer.MAX_ENCODED_SIZE;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -28,6 +28,13 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import name.livitski.databag.diff.ByteInputStream;
+import name.livitski.databag.diff.ByteOutputStream;
+import name.livitski.databag.diff.ByteSink;
+import name.livitski.databag.diff.ByteSource;
+import name.livitski.databag.diff.OffsetLengthDecodeException;
+import name.livitski.databag.diff.PositiveLongContainer;
 
 import org.junit.Test;
 

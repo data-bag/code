@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.app.filter;
+package name.livitski.databag.app.filter;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,17 +25,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import name.livitski.databag.db.Cursor;
+import name.livitski.databag.db.DBException;
+import name.livitski.databag.db.Manager;
+import name.livitski.databag.db.NoSuchRecordException;
+import name.livitski.databag.db.schema.FilterDAO;
+import name.livitski.databag.db.schema.FilterDTO;
+import name.livitski.databag.db.schema.ReplicaDAO;
+import name.livitski.databag.db.schema.ReplicaDTO;
 import name.livitski.tools.Logging;
-import name.livitski.tote.db.Cursor;
-import name.livitski.tote.db.DBException;
-import name.livitski.tote.db.Manager;
-import name.livitski.tote.db.NoSuchRecordException;
-import name.livitski.tote.db.schema.FilterDAO;
-import name.livitski.tote.db.schema.FilterDTO;
-import name.livitski.tote.db.schema.ReplicaDAO;
-import name.livitski.tote.db.schema.ReplicaDTO;
 
-import static name.livitski.tote.db.schema.FilterDTO.Type.*;
+import static name.livitski.databag.db.schema.FilterDTO.Type.*;
 
 /**
  * Factory and utility class for manipulating {@link FilterDef filter definitions}.
@@ -74,7 +74,7 @@ public class FilterFactory extends Logging
   * Creates an object that can be used to apply a filter to path
   * specifications. An empty filter definition will result in a
   * filter that passes all paths. A filter with no
-  * {@link name.livitski.tote.db.schema.FilterDTO.Type#INCLUDE INCLUDE}
+  * {@link name.livitski.databag.db.schema.FilterDTO.Type#INCLUDE INCLUDE}
   * elements is equivalent to a similar filter with an include-all element. 
   * @param source filter definition to compile
   * @param invert whether the returned filter should invert its result

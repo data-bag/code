@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.db;
+package name.livitski.databag.db;
 
 /**
  * Reports updates and deletes of non-existent database records.

@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.db;
+package name.livitski.databag.db;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,8 +24,10 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
+import name.livitski.databag.cli.Launcher;
+import name.livitski.databag.db.DBException;
+import name.livitski.databag.db.Manager;
 import name.livitski.tools.Logging;
-import name.livitski.tote.cli.Launcher;
 
 import org.junit.BeforeClass;
 

@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.app.sync;
+package name.livitski.databag.app.sync;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -42,28 +42,28 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import name.livitski.databag.db.BreadthFirstSearch;
+import name.livitski.databag.db.DBException;
+import name.livitski.databag.db.Filter;
+import name.livitski.databag.db.Manager;
+import name.livitski.databag.db.schema.VersionDAO;
+import name.livitski.databag.db.schema.VersionDTO;
+import name.livitski.databag.diff.ByteInputStream;
+import name.livitski.databag.diff.ByteOutputStream;
+import name.livitski.databag.diff.CommonDeltaWriter;
+import name.livitski.databag.diff.CumulativeDelta;
+import name.livitski.databag.diff.Delta;
+import name.livitski.databag.diff.DeltaFormatException;
+import name.livitski.databag.diff.DeltaLink;
+import name.livitski.databag.diff.DeltaWriter;
+import name.livitski.databag.diff.DiffResult;
+import name.livitski.databag.diff.Differencer;
+import name.livitski.databag.diff.DirectionalDeltaWriter;
+import name.livitski.databag.diff.EffectiveDelta;
+import name.livitski.databag.diff.Restorer;
 import name.livitski.tools.Logging;
-import name.livitski.tote.db.BreadthFirstSearch;
-import name.livitski.tote.db.DBException;
-import name.livitski.tote.db.Filter;
-import name.livitski.tote.db.Manager;
-import name.livitski.tote.db.schema.VersionDTO;
-import name.livitski.tote.db.schema.VersionDAO;
-import name.livitski.tote.diff.ByteInputStream;
-import name.livitski.tote.diff.ByteOutputStream;
-import name.livitski.tote.diff.CommonDeltaWriter;
-import name.livitski.tote.diff.CumulativeDelta;
-import name.livitski.tote.diff.Delta;
-import name.livitski.tote.diff.DeltaFormatException;
-import name.livitski.tote.diff.DeltaLink;
-import name.livitski.tote.diff.DeltaWriter;
-import name.livitski.tote.diff.DiffResult;
-import name.livitski.tote.diff.Differencer;
-import name.livitski.tote.diff.DirectionalDeltaWriter;
-import name.livitski.tote.diff.EffectiveDelta;
-import name.livitski.tote.diff.Restorer;
 
-import static name.livitski.tote.diff.Delta.Type.*;
+import static name.livitski.databag.diff.Delta.Type.*;
 
 /**
  * Rebuilds file images using version information,
@@ -480,7 +480,7 @@ public class ImageBuilder extends Logging implements Closeable
 
  /**
   * Describes an object that can save all types of deltas.
-  * @see name.livitski.tote.diff.Delta.Type
+  * @see name.livitski.databag.diff.Delta.Type
   */
  public interface DeltaStore
  {

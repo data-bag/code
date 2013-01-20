@@ -15,12 +15,12 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.diff;
+package name.livitski.databag.diff;
 
 import java.io.IOException;
 import java.io.PrintStream;
 
-import static name.livitski.tote.diff.Delta.Type.*;
+import static name.livitski.databag.diff.Delta.Type.*;
 
 /**
  * Accumulates consecutive deltas in memory and provides
@@ -133,7 +133,7 @@ public class CumulativeDelta implements EffectiveDelta
  }
 
  /* (non-Javadoc)
-  * @see name.livitski.tote.diff.EffectiveDelta#getCommonDelta()
+  * @see name.livitski.databag.diff.EffectiveDelta#getCommonDelta()
   */
  public CommonDeltaSource getCommonDelta()
  {
@@ -203,7 +203,7 @@ public class CumulativeDelta implements EffectiveDelta
  }
 
  /* (non-Javadoc)
-  * @see name.livitski.tote.diff.EffectiveDelta#getForwardDelta()
+  * @see name.livitski.databag.diff.EffectiveDelta#getForwardDelta()
   */
  public DirectionalDeltaSource getDirectionalDelta()
  {

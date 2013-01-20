@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.cli;
+package name.livitski.databag.cli;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,30 +47,30 @@ import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import name.livitski.databag.app.Configuration;
+import name.livitski.databag.app.filter.FilterDef;
+import name.livitski.databag.app.filter.FilterDefFile;
+import name.livitski.databag.app.filter.FilterDefInline;
+import name.livitski.databag.app.filter.FilterFactory;
+import name.livitski.databag.app.filter.FilterSpec;
+import name.livitski.databag.app.info.OperationLogs;
+import name.livitski.databag.app.info.ReplicaInfo;
+import name.livitski.databag.app.info.Replicas;
+import name.livitski.databag.app.info.SharedFileInfo;
+import name.livitski.databag.app.info.SharedFiles;
+import name.livitski.databag.app.info.OperationLogs.SyncEntry;
+import name.livitski.databag.app.maint.Cleaner;
+import name.livitski.databag.app.maint.ReplicaManager;
+import name.livitski.databag.app.sync.ResolutionAction;
+import name.livitski.databag.db.Cursor;
+import name.livitski.databag.db.DBException;
+import name.livitski.databag.db.EmptyCursor;
+import name.livitski.databag.db.IncompatibleSchemaException;
+import name.livitski.databag.db.Manager;
+import name.livitski.databag.db.SingletonCursor;
+import name.livitski.databag.db.schema.SyncLogDTO;
 import name.livitski.tools.Logging;
-import name.livitski.tote.app.Configuration;
-import name.livitski.tote.app.filter.FilterDef;
-import name.livitski.tote.app.filter.FilterDefFile;
-import name.livitski.tote.app.filter.FilterDefInline;
-import name.livitski.tote.app.filter.FilterFactory;
-import name.livitski.tote.app.filter.FilterSpec;
-import name.livitski.tote.app.info.OperationLogs;
-import name.livitski.tote.app.info.ReplicaInfo;
-import name.livitski.tote.app.info.Replicas;
-import name.livitski.tote.app.info.SharedFileInfo;
-import name.livitski.tote.app.info.SharedFiles;
-import name.livitski.tote.app.info.OperationLogs.SyncEntry;
-import name.livitski.tote.app.maint.Cleaner;
-import name.livitski.tote.app.maint.ReplicaManager;
-import name.livitski.tote.app.sync.ResolutionAction;
-import name.livitski.tote.db.Cursor;
-import name.livitski.tote.db.DBException;
-import name.livitski.tote.db.EmptyCursor;
-import name.livitski.tote.db.IncompatibleSchemaException;
-import name.livitski.tote.db.SingletonCursor;
-import name.livitski.tote.db.Manager;
-import name.livitski.tote.db.schema.SyncLogDTO;
-import static name.livitski.tote.app.Configuration.*;
+import static name.livitski.databag.app.Configuration.*;
 
 /**
  * Implements command-line interface of the application.

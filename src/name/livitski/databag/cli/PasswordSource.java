@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.cli;
+package name.livitski.databag.cli;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;

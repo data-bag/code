@@ -15,13 +15,13 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.db.schema;
+package name.livitski.databag.db.schema;
 
 import java.io.File;
 
-import name.livitski.tote.db.CachedDTO;
-import name.livitski.tote.db.DBException;
-import name.livitski.tote.db.Immutable;
+import name.livitski.databag.db.CachedDTO;
+import name.livitski.databag.db.DBException;
+import name.livitski.databag.db.Immutable;
 
 /**
  * Carries data objects from <code>NodeName</code> table
@@ -30,7 +30,7 @@ import name.livitski.tote.db.Immutable;
 public class NodeNameDTO extends CachedDTO<Long> implements Immutable
 {
  /* (non-Javadoc)
-  * @see name.livitski.tote.db.CachedDTO#getId()
+  * @see name.livitski.databag.db.CachedDTO#getId()
   */
  @Override
  public Long getId() throws IllegalStateException

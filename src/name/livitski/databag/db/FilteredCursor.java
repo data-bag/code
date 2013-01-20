@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.db;
+package name.livitski.databag.db;
 
 /**
  * Wrapper for filtering results of an underlying cursor.
@@ -41,7 +41,7 @@ public class FilteredCursor<T> implements Cursor<T>
  }
 
  /* (non-Javadoc)
-  * @see name.livitski.tote.db.Cursor#next()
+  * @see name.livitski.databag.db.Cursor#next()
   */
  public T next() throws DBException
  {

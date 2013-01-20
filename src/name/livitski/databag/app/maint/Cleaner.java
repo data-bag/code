@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.app.maint;
+package name.livitski.databag.app.maint;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -27,26 +27,26 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import name.livitski.tote.app.ConfigurableService;
-import name.livitski.tote.app.Configuration;
-import name.livitski.tote.app.filter.PathFilter;
-import name.livitski.tote.app.info.Statistics;
-import name.livitski.tote.app.sync.ImageBuilder;
-import name.livitski.tote.db.ConstraintViolationException;
-import name.livitski.tote.db.Cursor;
-import name.livitski.tote.db.DBException;
-import name.livitski.tote.db.Manager;
-import name.livitski.tote.db.Transaction;
-import name.livitski.tote.db.schema.FileDAO;
-import name.livitski.tote.db.schema.FileDTO;
-import name.livitski.tote.db.schema.LastSyncDAO;
-import name.livitski.tote.db.schema.NodeNameDAO;
-import name.livitski.tote.db.schema.ReplicaDTO;
-import name.livitski.tote.db.schema.SyncLogDAO;
-import name.livitski.tote.db.schema.SyncLogDTO;
-import name.livitski.tote.db.schema.VersionDAO;
-import name.livitski.tote.db.schema.VersionDTO;
-import name.livitski.tote.diff.Delta;
+import name.livitski.databag.app.ConfigurableService;
+import name.livitski.databag.app.Configuration;
+import name.livitski.databag.app.filter.PathFilter;
+import name.livitski.databag.app.info.Statistics;
+import name.livitski.databag.app.sync.ImageBuilder;
+import name.livitski.databag.db.ConstraintViolationException;
+import name.livitski.databag.db.Cursor;
+import name.livitski.databag.db.DBException;
+import name.livitski.databag.db.Manager;
+import name.livitski.databag.db.Transaction;
+import name.livitski.databag.db.schema.FileDAO;
+import name.livitski.databag.db.schema.FileDTO;
+import name.livitski.databag.db.schema.LastSyncDAO;
+import name.livitski.databag.db.schema.NodeNameDAO;
+import name.livitski.databag.db.schema.ReplicaDTO;
+import name.livitski.databag.db.schema.SyncLogDAO;
+import name.livitski.databag.db.schema.SyncLogDTO;
+import name.livitski.databag.db.schema.VersionDAO;
+import name.livitski.databag.db.schema.VersionDTO;
+import name.livitski.databag.diff.Delta;
 
 /**
  * Performs cleanup of the shared storage. This class

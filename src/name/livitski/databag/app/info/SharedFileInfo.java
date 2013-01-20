@@ -15,22 +15,22 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.app.info;
+package name.livitski.databag.app.info;
 
 import java.io.File;
 import java.sql.Timestamp;
 
-import name.livitski.tote.db.Cursor;
-import name.livitski.tote.db.DBException;
-import name.livitski.tote.db.EmptyCursor;
-import name.livitski.tote.db.Function;
-import name.livitski.tote.db.Manager;
-import name.livitski.tote.db.WrapperCursor;
-import name.livitski.tote.db.schema.FileDTO;
-import name.livitski.tote.db.schema.NodeNameDAO;
-import name.livitski.tote.db.schema.NodeNameDTO;
-import name.livitski.tote.db.schema.VersionDAO;
-import name.livitski.tote.db.schema.VersionDTO;
+import name.livitski.databag.db.Cursor;
+import name.livitski.databag.db.DBException;
+import name.livitski.databag.db.EmptyCursor;
+import name.livitski.databag.db.Function;
+import name.livitski.databag.db.Manager;
+import name.livitski.databag.db.WrapperCursor;
+import name.livitski.databag.db.schema.FileDTO;
+import name.livitski.databag.db.schema.NodeNameDAO;
+import name.livitski.databag.db.schema.NodeNameDTO;
+import name.livitski.databag.db.schema.VersionDAO;
+import name.livitski.databag.db.schema.VersionDTO;
 
 /**
  * Provides information about a file on the shared medium.
@@ -69,7 +69,7 @@ public class SharedFileInfo
  /**
   * @return the time that this file has been marked deleted or
   * <code>null</code> if the file is not marked deleted.
-  * @see name.livitski.tote.db.schema.VersionDTO#isDeletionMark()
+  * @see name.livitski.databag.db.schema.VersionDTO#isDeletionMark()
   */
  public Timestamp getDeleted() throws DBException
  {
@@ -79,7 +79,7 @@ public class SharedFileInfo
 
  /**
   * @return unique record identifier of this file's record
-  * @see name.livitski.tote.db.schema.FileDTO#getId()
+  * @see name.livitski.databag.db.schema.FileDTO#getId()
   */
  public Number getId()
  {
@@ -162,7 +162,7 @@ public class SharedFileInfo
   /**
    * @return unique identifier of this version's base version or
    * <code>null</code> if there was no base version
-   * @see name.livitski.tote.db.schema.VersionDTO#getBaseVersionId()
+   * @see name.livitski.databag.db.schema.VersionDTO#getBaseVersionId()
    */
   public Number getBaseVersionId()
   {
@@ -172,7 +172,7 @@ public class SharedFileInfo
 
   /**
    * @return unique identifier of this version within its file information
-   * @see name.livitski.tote.db.schema.VersionDTO#getId()
+   * @see name.livitski.databag.db.schema.VersionDTO#getId()
    */
   public Number getId()
   {
@@ -181,7 +181,7 @@ public class SharedFileInfo
 
   /**
    * @return modification time stamp of this version 
-   * @see name.livitski.tote.db.schema.VersionDTO#getModifiedTime()
+   * @see name.livitski.databag.db.schema.VersionDTO#getModifiedTime()
    */
   public Timestamp getModifiedTime()
   {
@@ -190,7 +190,7 @@ public class SharedFileInfo
 
   /**
    * @return size of the version's image in bytes
-   * @see name.livitski.tote.db.schema.VersionDTO#getSize()
+   * @see name.livitski.databag.db.schema.VersionDTO#getSize()
    */
   public long getSize()
   {

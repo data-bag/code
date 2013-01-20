@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.db;
+package name.livitski.databag.db;
 
 /**
  * Wrapper for processing results of an underlying cursor.
@@ -40,7 +40,7 @@ public class WrapperCursor<R, T> implements Cursor<R>
  }
 
  /* (non-Javadoc)
-  * @see name.livitski.tote.db.Cursor#next()
+  * @see name.livitski.databag.db.Cursor#next()
   */
  public R next() throws DBException
  {

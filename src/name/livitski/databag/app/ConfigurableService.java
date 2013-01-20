@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.app;
+package name.livitski.databag.app;
 
 import java.io.Closeable;
 import java.io.File;
@@ -24,21 +24,21 @@ import java.sql.Timestamp;
 import java.util.Map;
 import java.util.logging.Level;
 
+import name.livitski.databag.app.Configuration.Parameter;
+import name.livitski.databag.app.filter.FilterDef;
+import name.livitski.databag.app.filter.FilterFactory;
+import name.livitski.databag.app.filter.FilterSpec;
+import name.livitski.databag.app.filter.PathFilter;
+import name.livitski.databag.app.filter.PathMatcher;
+import name.livitski.databag.app.sync.ImageBuilder;
+import name.livitski.databag.db.DBException;
+import name.livitski.databag.db.Manager;
+import name.livitski.databag.db.NoSuchRecordException;
+import name.livitski.databag.db.schema.ReplicaDAO;
+import name.livitski.databag.db.schema.ReplicaDTO;
+import name.livitski.databag.db.schema.SyncLogDAO;
+import name.livitski.databag.db.schema.SyncLogDTO;
 import name.livitski.tools.Logging;
-import name.livitski.tote.app.Configuration.Parameter;
-import name.livitski.tote.app.filter.FilterDef;
-import name.livitski.tote.app.filter.FilterFactory;
-import name.livitski.tote.app.filter.FilterSpec;
-import name.livitski.tote.app.filter.PathFilter;
-import name.livitski.tote.app.filter.PathMatcher;
-import name.livitski.tote.app.sync.ImageBuilder;
-import name.livitski.tote.db.DBException;
-import name.livitski.tote.db.Manager;
-import name.livitski.tote.db.NoSuchRecordException;
-import name.livitski.tote.db.schema.ReplicaDAO;
-import name.livitski.tote.db.schema.ReplicaDTO;
-import name.livitski.tote.db.schema.SyncLogDAO;
-import name.livitski.tote.db.schema.SyncLogDTO;
 
 /**
  * Implements functions common to the configurable
@@ -215,7 +215,7 @@ public abstract class ConfigurableService extends Logging implements Closeable
  
  /**
   * Obtains a parameter value from the underlying configuration.
-  * @see name.livitski.tote.app.Configuration#getParameterValue(name.livitski.tote.app.Configuration.Parameter)
+  * @see name.livitski.databag.app.Configuration#getParameterValue(name.livitski.databag.app.Configuration.Parameter)
   */
  protected <T> T getParameterValue(Parameter<T> param)
  {

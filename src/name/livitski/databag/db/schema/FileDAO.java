@@ -15,28 +15,28 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.db.schema;
+package name.livitski.databag.db.schema;
 
 import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import name.livitski.tote.db.AbstractDAO;
-import name.livitski.tote.db.ConstraintViolationException;
-import name.livitski.tote.db.Cursor;
-import name.livitski.tote.db.DBException;
-import name.livitski.tote.db.EmptyCursor;
-import name.livitski.tote.db.Filter;
-import name.livitski.tote.db.FilteredCursor;
-import name.livitski.tote.db.Function;
-import name.livitski.tote.db.IncompatibleSchemaException;
-import name.livitski.tote.db.Manager;
-import name.livitski.tote.db.NoSuchRecordException;
-import name.livitski.tote.db.PreparedStatementCursor;
-import name.livitski.tote.db.PreparedStatementHandler;
-import name.livitski.tote.db.SchemaUpgrades;
-import name.livitski.tote.db.WrapperCursor;
+import name.livitski.databag.db.AbstractDAO;
+import name.livitski.databag.db.ConstraintViolationException;
+import name.livitski.databag.db.Cursor;
+import name.livitski.databag.db.DBException;
+import name.livitski.databag.db.EmptyCursor;
+import name.livitski.databag.db.Filter;
+import name.livitski.databag.db.FilteredCursor;
+import name.livitski.databag.db.Function;
+import name.livitski.databag.db.IncompatibleSchemaException;
+import name.livitski.databag.db.Manager;
+import name.livitski.databag.db.NoSuchRecordException;
+import name.livitski.databag.db.PreparedStatementCursor;
+import name.livitski.databag.db.PreparedStatementHandler;
+import name.livitski.databag.db.SchemaUpgrades;
+import name.livitski.databag.db.WrapperCursor;
 
 /**
  * DAO implementation for the <code>File</code> table.
@@ -427,7 +427,7 @@ public class FileDAO extends AbstractDAO
  }
 
  /* (non-Javadoc)
-  * @see name.livitski.tote.db.AbstractDAO#schemaDDL()
+  * @see name.livitski.databag.db.AbstractDAO#schemaDDL()
   */
  @Override
  public String[] schemaDDL()
@@ -523,7 +523,7 @@ public class FileDAO extends AbstractDAO
   }
 
   /* (non-Javadoc)
-   * @see name.livitski.tote.db.StatementHandler#legend()
+   * @see name.livitski.databag.db.StatementHandler#legend()
    */
   @Override
   protected String legend()
@@ -586,7 +586,7 @@ public class FileDAO extends AbstractDAO
   }
  
   /* (non-Javadoc)
-   * @see name.livitski.tote.db.StatementHandler#legend()
+   * @see name.livitski.databag.db.StatementHandler#legend()
    */
   @Override
   protected String legend()

@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.db;
+package name.livitski.databag.db;
 
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import static name.livitski.tote.db.CachedDTO.State.*;
+import static name.livitski.databag.db.CachedDTO.State.*;
 
 /**
  * Provides an object cache for a DAO implementation. Data objects

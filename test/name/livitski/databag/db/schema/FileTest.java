@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.db.schema;
+package name.livitski.databag.db.schema;
 
 import java.io.File;
 import java.util.AbstractMap;
@@ -38,12 +38,18 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import name.livitski.tote.app.filter.PathMatcher;
-import name.livitski.tote.db.AbstractDBTest;
-import name.livitski.tote.db.Cursor;
-import name.livitski.tote.db.DBException;
-import name.livitski.tote.db.Manager;
-import static name.livitski.tote.db.schema.NodeNameTest.SAMPLE_DIR;
+import name.livitski.databag.app.filter.PathMatcher;
+import name.livitski.databag.db.AbstractDBTest;
+import name.livitski.databag.db.Cursor;
+import name.livitski.databag.db.DBException;
+import name.livitski.databag.db.Manager;
+import name.livitski.databag.db.schema.FileDAO;
+import name.livitski.databag.db.schema.FileDTO;
+import name.livitski.databag.db.schema.NodeNameDAO;
+import name.livitski.databag.db.schema.NodeNameDTO;
+import name.livitski.databag.db.schema.VersionDAO;
+import name.livitski.databag.db.schema.VersionDTO;
+import static name.livitski.databag.db.schema.NodeNameTest.SAMPLE_DIR;
 
 public class FileTest extends AbstractDBTest
 {

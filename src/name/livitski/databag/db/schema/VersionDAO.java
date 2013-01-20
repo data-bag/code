@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.db.schema;
+package name.livitski.databag.db.schema;
 
 import java.io.FilterInputStream;
 import java.io.IOException;
@@ -31,18 +31,18 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 
-import name.livitski.tote.db.AbstractDAO;
-import name.livitski.tote.db.ConstraintViolationException;
-import name.livitski.tote.db.Cursor;
-import name.livitski.tote.db.DBException;
-import name.livitski.tote.db.IncompatibleSchemaException;
-import name.livitski.tote.db.Manager;
-import name.livitski.tote.db.NoSuchRecordException;
-import name.livitski.tote.db.PreparedStatementCursor;
-import name.livitski.tote.db.PreparedStatementHandler;
-import name.livitski.tote.db.SchemaUpgrades;
-import name.livitski.tote.db.SimpleTopography;
-import name.livitski.tote.diff.Delta.Type;
+import name.livitski.databag.db.AbstractDAO;
+import name.livitski.databag.db.ConstraintViolationException;
+import name.livitski.databag.db.Cursor;
+import name.livitski.databag.db.DBException;
+import name.livitski.databag.db.IncompatibleSchemaException;
+import name.livitski.databag.db.Manager;
+import name.livitski.databag.db.NoSuchRecordException;
+import name.livitski.databag.db.PreparedStatementCursor;
+import name.livitski.databag.db.PreparedStatementHandler;
+import name.livitski.databag.db.SchemaUpgrades;
+import name.livitski.databag.db.SimpleTopography;
+import name.livitski.databag.diff.Delta.Type;
 
 /**
  * DAO implementation for the <code>Version</code> table.
@@ -365,7 +365,7 @@ public class VersionDAO extends AbstractDAO
   * @param file file that the version belongs to
   * @param asof the moment in time to look up in the file's history
   * @return a version record,
-  * {@link name.livitski.tote.db.schema.VersionDTO#isDeletionMark() a deletion mark},
+  * {@link name.livitski.databag.db.schema.VersionDTO#isDeletionMark() a deletion mark},
   * or <code>null</code> if the file had no known versions at the time
   */
  public VersionDTO findVersionAsOf(FileDTO file, Timestamp asof)
@@ -387,7 +387,7 @@ public class VersionDAO extends AbstractDAO
   * {@link FileAndVersionDTO#getVersion() version properties} store
   * <code>null</code> values  
   * @return a cursor over the file records along with version records or
-  * {@link name.livitski.tote.db.schema.VersionDTO#isDeletionMark() deletion marks}
+  * {@link name.livitski.databag.db.schema.VersionDTO#isDeletionMark() deletion marks}
   */
  public Cursor<FileAndVersionDTO> findAllVersionsAsOf(
    final Timestamp asof,
@@ -484,7 +484,7 @@ public class VersionDAO extends AbstractDAO
   * You must close the returned stream after using it.
   * @return image input stream or <code>null</code> if the
   * version stores no complete image
-  * @see name.livitski.tote.db.schema.VersionDTO#isImageAvailable()
+  * @see name.livitski.databag.db.schema.VersionDTO#isImageAvailable()
   */
  public InputStream retrieveImage(VersionDTO v)
 	throws DBException
@@ -497,7 +497,7 @@ public class VersionDAO extends AbstractDAO
  /**
   * Updates version record in the database.
   * When updating version records, make sure to follow the
-  * {@link name.livitski.tote.db.schema.VersionDTO#setModifiedTime(Timestamp) continuity rules}
+  * {@link name.livitski.databag.db.schema.VersionDTO#setModifiedTime(Timestamp) continuity rules}
   * for version tree timestamps.
   */
  public void update(final VersionDTO version)
@@ -576,7 +576,7 @@ public class VersionDAO extends AbstractDAO
  /**
   * Creates a version record in the database.
   * When adding version records, make sure to follow the
-  * {@link name.livitski.tote.db.schema.VersionDTO#setModifiedTime(Timestamp) continuity rules}
+  * {@link name.livitski.databag.db.schema.VersionDTO#setModifiedTime(Timestamp) continuity rules}
   * for version tree timestamps.
   */
  public void insert(final VersionDTO version)
@@ -720,7 +720,7 @@ public class VersionDAO extends AbstractDAO
  }
 
  /* (non-Javadoc)
-  * @see name.livitski.tote.db.AbstractDAO#schemaDDL()
+  * @see name.livitski.databag.db.AbstractDAO#schemaDDL()
   */
  @Override
  public String[] schemaDDL()
@@ -869,7 +869,7 @@ public class VersionDAO extends AbstractDAO
   }
  
   /* (non-Javadoc)
-   * @see name.livitski.tote.db.StatementHandler#legend()
+   * @see name.livitski.databag.db.StatementHandler#legend()
    */
   @Override
   protected String legend()
@@ -905,7 +905,7 @@ public class VersionDAO extends AbstractDAO
   }
  
   /* (non-Javadoc)
-   * @see name.livitski.tote.db.StatementHandler#legend()
+   * @see name.livitski.databag.db.StatementHandler#legend()
    */
   @Override
   protected String legend()
@@ -940,7 +940,7 @@ public class VersionDAO extends AbstractDAO
   }
  
   /* (non-Javadoc)
-   * @see name.livitski.tote.db.StatementHandler#legend()
+   * @see name.livitski.databag.db.StatementHandler#legend()
    */
   @Override
   protected String legend()
@@ -974,7 +974,7 @@ public class VersionDAO extends AbstractDAO
   }
  
   /* (non-Javadoc)
-   * @see name.livitski.tote.db.StatementHandler#legend()
+   * @see name.livitski.databag.db.StatementHandler#legend()
    */
   @Override
   protected String legend()
@@ -1023,7 +1023,7 @@ public class VersionDAO extends AbstractDAO
   }
  
   /* (non-Javadoc)
-   * @see name.livitski.tote.db.StatementHandler#legend()
+   * @see name.livitski.databag.db.StatementHandler#legend()
    */
   @Override
   protected String legend()
@@ -1172,7 +1172,7 @@ public class VersionDAO extends AbstractDAO
   }
  
   /* (non-Javadoc)
-   * @see name.livitski.tote.db.StatementHandler#legend()
+   * @see name.livitski.databag.db.StatementHandler#legend()
    */
   @Override
   protected String legend()
@@ -1217,7 +1217,7 @@ public class VersionDAO extends AbstractDAO
   }
 
   /* (non-Javadoc)
-   * @see name.livitski.tote.db.StatementHandler#legend()
+   * @see name.livitski.databag.db.StatementHandler#legend()
    */
   @Override
   protected String legend()
@@ -1250,7 +1250,7 @@ public class VersionDAO extends AbstractDAO
   }
  
   /* (non-Javadoc)
-   * @see name.livitski.tote.db.StatementHandler#legend()
+   * @see name.livitski.databag.db.StatementHandler#legend()
    */
   @Override
   protected String legend()
@@ -1341,7 +1341,7 @@ public class VersionDAO extends AbstractDAO
   }
  
   /* (non-Javadoc)
-   * @see name.livitski.tote.db.StatementHandler#legend()
+   * @see name.livitski.databag.db.StatementHandler#legend()
    */
   @Override
   protected String legend()
@@ -1385,7 +1385,7 @@ public class VersionDAO extends AbstractDAO
   }
 
   /* (non-Javadoc)
-   * @see name.livitski.tote.db.StatementHandler#legend()
+   * @see name.livitski.databag.db.StatementHandler#legend()
    */
   @Override
   protected String legend()
@@ -1467,7 +1467,7 @@ public class VersionDAO extends AbstractDAO
   }
  
   /* (non-Javadoc)
-   * @see name.livitski.tote.db.StatementHandler#legend()
+   * @see name.livitski.databag.db.StatementHandler#legend()
    */
   @Override
   protected String legend()

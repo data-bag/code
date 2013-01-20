@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.db.schema;
+package name.livitski.databag.db.schema;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -68,11 +68,11 @@ public class VersionDTO implements VersionInfo
  /**
   * The following rules apply when setting or changing version modification times:
   * <ol>
-  * <li>{@link name.livitski.tote.db.schema.VersionDTO#getModifiedTime() modification time}
+  * <li>{@link name.livitski.databag.db.schema.VersionDTO#getModifiedTime() modification time}
   * of a version record MAY NOT follow any of its descendant versions' modification times.</li>
-  * <li>{@link name.livitski.tote.db.schema.VersionDTO#getModifiedTime() modification time}
+  * <li>{@link name.livitski.databag.db.schema.VersionDTO#getModifiedTime() modification time}
   * MUST follow (or be equal to) that of its
-  * {@link name.livitski.tote.db.schema.VersionDTO#getBaseVersionId() base version}.</li>
+  * {@link name.livitski.databag.db.schema.VersionDTO#getBaseVersionId() base version}.</li>
   * <li>The {@link FileDTO#getCurrentVersionId() current version} of any shared file
   * MAY NOT have been last modified earlier than any other version of that file.</li>
   * </li> 

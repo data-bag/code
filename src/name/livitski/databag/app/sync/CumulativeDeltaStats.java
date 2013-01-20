@@ -15,11 +15,11 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.app.sync;
+package name.livitski.databag.app.sync;
 
 /**
  * Contains information about the size and complexity of an
- * {@link name.livitski.tote.diff.CumulativeDelta cumulative delta}.
+ * {@link name.livitski.databag.diff.CumulativeDelta cumulative delta}.
  */
 public class CumulativeDeltaStats
 {

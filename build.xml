@@ -25,9 +25,9 @@
 	<property name="dest.jar.path" location="${basedir}/${dest.jar.rel}" />
 	<property name="javadoc.dir.rel" value="javadoc" />
 	<property name="javadoc.dir" location="${basedir}/${javadoc.dir.rel}" />
-	<property name="classes.main" value="name.livitski.tote.cli.Launcher" />
+	<property name="classes.main" value="name.livitski.databag.cli.Launcher" />
 	<property name="git.gitignore.file" location="${basedir}/.gitignore" />
-	<property name="version" value="1.04" />
+	<property name="version" value="1.05" />
 	<property name="author" value="Konstantin Livitski" />
 	<tstamp>
 		<format property="version.time" pattern="yyMMdd" />
@@ -55,14 +55,14 @@
     	<jar destfile="${dest.jar.path}" basedir="${build.dir}" update="false" duplicate="fail">
     		<manifest>
     			<attribute name="Main-Class" value="${classes.main}"/>
-    		    <section name="name/livitski/tote/">
+    		    <section name="name/livitski/databag/">
     		      <attribute name="Specification-Title" value="Tote"/>
     		      <attribute name="Specification-Version" value="${version}"/>
     		      <attribute name="Specification-Vendor" value="${author}"/>
     		      <attribute name="Implementation-Version" value="${version}.${version.time}"/> 
     		      <attribute name="Implementation-Vendor" value="${author}"/>
     		    </section>
-    		    <section name="name/livitski/tote/cli/">
+    		    <section name="name/livitski/databag/cli/">
     		      <attribute name="Implementation-Title" value="Tote command-line launcher"/>
     		      <attribute name="Implementation-Version" value="${version}.${version.time}"/> 
     		      <attribute name="Implementation-Vendor" value="${author}"/>
@@ -106,7 +106,7 @@
         	destdir="${javadoc.dir}" doctitle="Tote project"
         	nodeprecated="false" nodeprecatedlist="false"
         	noindex="false" nonavbar="false" notree="false"
-        	packagenames="name.livitski.tools,name.livitski.tote.cli,name.livitski.tote.db,name.livitski.tote.db.schema,name.livitski.tote.app,name.livitski.tote.app.sync,name.livitski.tote.app.maint,name.livitski.tote.app.filter,name.livitski.tote.diff,name.livitski.tote.app.info"
+        	packagenames="name.livitski.tools,name.livitski.databag.cli,name.livitski.databag.db,name.livitski.databag.db.schema,name.livitski.databag.app,name.livitski.databag.app.sync,name.livitski.databag.app.maint,name.livitski.databag.app.filter,name.livitski.databag.diff,name.livitski.databag.app.info"
         	source="1.5" sourcepath="${source.dir}" splitindex="true" use="true" version="true">
             <link href="http://docs.oracle.com/javase/6/docs/api/"/>
         </javadoc>

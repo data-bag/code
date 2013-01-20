@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.db;
+package name.livitski.databag.db;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,7 +27,6 @@ import java.sql.SQLException;
  */
 public class SchemaVersionDAO extends AbstractDAO
 {
- 
  /**
   * Looks up version record for a DAO class.
   * @param daoClass the class to retrieve the record for.
@@ -39,9 +38,18 @@ public class SchemaVersionDAO extends AbstractDAO
 	throws DBException
  {
   Loader loader = new Loader(mgr);
-  loader.setDaoClassName(daoClass.getName());
+  String pname = persistentClassName(daoClass);
+  loader.setDaoClassName(pname);
   loader.execute();
-  return loader.getRecord(); 
+  SchemaVersionDTO record = loader.getRecord();
+  // second attempt to pick up DAO v.1 with legacy package name
+  if (null == record && getClass() == daoClass && 1 >= getOldestUpgradableVersion())
+  {
+   loader.setDaoClassName(V1_PACKAGE_NAME + pname);
+   loader.execute();
+   record = loader.getRecord();
+  }
+  return record;
  }
 
  /**
@@ -74,6 +82,12 @@ public class SchemaVersionDAO extends AbstractDAO
   */
  public void update(final SchemaVersionDTO record) throws DBException
  {
+  String daoClassName = record.getDaoClassName();
+  if (null != daoClassName && daoClassName.startsWith(V1_PACKAGE_NAME))
+  {
+   if (daoClassName.equals(V1_PACKAGE_NAME + ".SchemaVersionDAO") && 2 == record.getVersion())
+    record.setDaoClassName(persistentClassName(SchemaVersionDAO.class));
+  }
   new PreparedStatementHandler(mgr, UPDATE_SQL) {
    @Override
    protected void bindParameters(PreparedStatement stmt) throws SQLException
@@ -99,11 +113,17 @@ public class SchemaVersionDAO extends AbstractDAO
  @Override
  public int getCurrentVersion()
  {
-  return 1;
+  return getUpgradeScripts().getCurrentVersion();
+ }
+
+ @Override
+ public int getOldestUpgradableVersion()
+ {
+  return getUpgradeScripts().getOldestUpgradableVersion();
  }
 
  /* (non-Javadoc)
-  * @see name.livitski.tote.db.AbstractDAO#schemaDDL()
+  * @see name.livitski.databag.db.AbstractDAO#schemaDDL()
   */
  @Override
  public String[] schemaDDL()
@@ -143,6 +163,20 @@ public class SchemaVersionDAO extends AbstractDAO
    }
   }.execute();
   return schemaFound[0];
+ }
+
+ @Override
+ protected int upgradeSchema(int dbVersion)
+  throws DBException, IncompatibleSchemaException
+ {
+  return getUpgradeScripts().upgradeSchema(dbVersion);
+ }
+
+ protected SchemaUpgrades getUpgradeScripts()
+ {
+  if (null == upgrades)
+   upgrades = new SchemaUpgrades(this, UPGRADE_SCRIPTS);
+  return upgrades;
  }
 
  protected SchemaVersionDAO(Manager mgr)
@@ -229,4 +263,16 @@ public class SchemaVersionDAO extends AbstractDAO
 
  protected static final String UPDATE_SQL =
   "UPDATE " + TABLE_NAME + " SET version = ? WHERE dao = ?";
+
+ protected static final String V1_PACKAGE_NAME = "name.livitski.tote.db";
+
+ protected static final Object[][] UPGRADE_SCRIPTS =
+ {
+  { // V1 TO V2
+   "UPDATE " + TABLE_NAME + " SET dao=SUBSTRING(dao, " + (1 + V1_PACKAGE_NAME.length()) + 
+   ") WHERE dao LIKE '" + V1_PACKAGE_NAME + ".%'"
+  }
+ };
+
+ private SchemaUpgrades upgrades;
 }

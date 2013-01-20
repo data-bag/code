@@ -15,19 +15,19 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.cli;
+package name.livitski.databag.cli;
 
 import java.io.File;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 
-import name.livitski.tote.app.Configuration;
-import name.livitski.tote.app.info.ReplicaInfo;
-import name.livitski.tote.app.info.SharedFileInfo;
-import name.livitski.tote.app.info.SharedFiles;
-import name.livitski.tote.db.Cursor;
-import name.livitski.tote.db.DBException;
-import name.livitski.tote.db.Manager;
+import name.livitski.databag.app.Configuration;
+import name.livitski.databag.app.info.ReplicaInfo;
+import name.livitski.databag.app.info.SharedFileInfo;
+import name.livitski.databag.app.info.SharedFiles;
+import name.livitski.databag.db.Cursor;
+import name.livitski.databag.db.DBException;
+import name.livitski.databag.db.Manager;
 
 public abstract class PointInTimeAbstractCommand extends AbstractCommand
 {

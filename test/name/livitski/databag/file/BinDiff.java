@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.file;
+package name.livitski.databag.file;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,14 +29,14 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import name.livitski.databag.diff.ByteInputStream;
+import name.livitski.databag.diff.ByteOutputStream;
+import name.livitski.databag.diff.Delta;
+import name.livitski.databag.diff.DiffResult;
+import name.livitski.databag.diff.Differencer;
 import name.livitski.tools.Logging;
 import name.livitski.tools.launch.ArgumentSink;
 import name.livitski.tools.launch.BeanLauncher;
-import name.livitski.tote.diff.ByteInputStream;
-import name.livitski.tote.diff.ByteOutputStream;
-import name.livitski.tote.diff.Delta;
-import name.livitski.tote.diff.DiffResult;
-import name.livitski.tote.diff.Differencer;
 
 /**
  * Command-line tool for differential compression of binary file versions. 

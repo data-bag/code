@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.db.schema;
+package name.livitski.databag.db.schema;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,15 +24,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import name.livitski.tote.db.AbstractDAO;
-import name.livitski.tote.db.ConstraintViolationException;
-import name.livitski.tote.db.Cursor;
-import name.livitski.tote.db.DBException;
-import name.livitski.tote.db.Manager;
-import name.livitski.tote.db.NoSuchRecordException;
-import name.livitski.tote.db.PreparedStatementCursor;
-import name.livitski.tote.db.PreparedStatementHandler;
-import name.livitski.tote.db.Transaction;
+import name.livitski.databag.db.AbstractDAO;
+import name.livitski.databag.db.ConstraintViolationException;
+import name.livitski.databag.db.Cursor;
+import name.livitski.databag.db.DBException;
+import name.livitski.databag.db.Manager;
+import name.livitski.databag.db.NoSuchRecordException;
+import name.livitski.databag.db.PreparedStatementCursor;
+import name.livitski.databag.db.PreparedStatementHandler;
+import name.livitski.databag.db.Transaction;
 
 /**
  * DAO implementation for <code>Filter</code> and <code>FilterElement</code>
@@ -373,7 +373,7 @@ public class FilterDAO extends AbstractDAO
  /**
   * Loads the pattern lists into a filter object.
   * This is required before a filter can be
-  * {@link FilterDTO#getElementsAsStrings(name.livitski.tote.db.schema.FilterDTO.Type) queried}
+  * {@link FilterDTO#getElementsAsStrings(name.livitski.databag.db.schema.FilterDTO.Type) queried}
   * or {@link #save(FilterDTO) saved}.
   * @see FilterDTO#hasElementsLoaded() 
   */ // Q15FLT08

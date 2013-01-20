@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.diff;
+package name.livitski.databag.diff;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;
@@ -38,7 +38,7 @@ public class ByteOutputStream extends FilterOutputStream
  }
 
  /* (non-Javadoc)
-  * @see name.livitski.tote.diff.ByteSink#writeByte(int)
+  * @see name.livitski.databag.diff.ByteSink#writeByte(int)
   */
  public void writeByte(int value)
   throws IOException

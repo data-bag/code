@@ -15,14 +15,22 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.diff;
+package name.livitski.databag.diff;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static name.livitski.tote.diff.Delta.Type.*;
+import static name.livitski.databag.diff.Delta.Type.*;
+
+import name.livitski.databag.diff.ByteInputStream;
+import name.livitski.databag.diff.ByteOutputStream;
+import name.livitski.databag.diff.Delta;
+import name.livitski.databag.diff.DiffResult;
+import name.livitski.databag.diff.Differencer;
+import name.livitski.databag.diff.OffsetLengthDecodeException;
+import name.livitski.databag.diff.PositiveLongContainer;
 
 import org.junit.Before;
 import org.junit.Test;

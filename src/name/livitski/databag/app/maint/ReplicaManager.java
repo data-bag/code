@@ -15,16 +15,16 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.app.maint;
+package name.livitski.databag.app.maint;
 
-import name.livitski.tote.app.ConfigurableService;
-import name.livitski.tote.app.Configuration;
-import name.livitski.tote.app.filter.FilterDef;
-import name.livitski.tote.db.DBException;
-import name.livitski.tote.db.Manager;
-import name.livitski.tote.db.NoSuchRecordException;
-import name.livitski.tote.db.schema.ReplicaDAO;
-import name.livitski.tote.db.schema.ReplicaDTO;
+import name.livitski.databag.app.ConfigurableService;
+import name.livitski.databag.app.Configuration;
+import name.livitski.databag.app.filter.FilterDef;
+import name.livitski.databag.db.DBException;
+import name.livitski.databag.db.Manager;
+import name.livitski.databag.db.NoSuchRecordException;
+import name.livitski.databag.db.schema.ReplicaDAO;
+import name.livitski.databag.db.schema.ReplicaDTO;
 
 /**
  * Provides services related to replica information retrieval.

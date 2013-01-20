@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.diff;
+package name.livitski.databag.diff;
 
 import java.io.IOException;
 
@@ -84,7 +84,7 @@ public class DirectionalDeltaReader extends DeltaReader
  }
 
  /* (non-Javadoc)
-  * @see name.livitski.tote.diff.DeltaReader#readFragment(name.livitski.tote.diff.PositiveLongContainer)
+  * @see name.livitski.databag.diff.DeltaReader#readFragment(name.livitski.databag.diff.PositiveLongContainer)
   */
  @Override
  protected void readFragment(PositiveLongContainer plc)

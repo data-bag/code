@@ -15,14 +15,14 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.app;
+package name.livitski.databag.app;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import name.livitski.tote.app.filter.FilterSpec;
-import name.livitski.tote.app.sync.ResolutionAction;
-import name.livitski.tote.app.sync.SyncService;
+import name.livitski.databag.app.filter.FilterSpec;
+import name.livitski.databag.app.sync.ResolutionAction;
+import name.livitski.databag.app.sync.SyncService;
 
 /**
  * Contains a set of synchronization process parameters that can be

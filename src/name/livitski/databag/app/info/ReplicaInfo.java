@@ -15,11 +15,11 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.app.info;
+package name.livitski.databag.app.info;
 
-import name.livitski.tote.db.DBException;
-import name.livitski.tote.db.Function;
-import name.livitski.tote.db.schema.ReplicaDTO;
+import name.livitski.databag.db.DBException;
+import name.livitski.databag.db.Function;
+import name.livitski.databag.db.schema.ReplicaDTO;
 
 /**
  * Provides information about a local copy of files on the shared
@@ -52,7 +52,7 @@ public class ReplicaInfo
 
  /**
   * @return unique record identifier of this replica's record
-  * @see name.livitski.tote.db.schema.ReplicaDTO#getId()
+  * @see name.livitski.databag.db.schema.ReplicaDTO#getId()
   */
  public Number getId()
  {

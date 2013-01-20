@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.diff;
+package name.livitski.databag.diff;
 
 import java.io.IOException;
 
@@ -55,7 +55,7 @@ public class DeltaLink implements EffectiveDelta
 
  /*
   * (non-Javadoc)
-  * @see name.livitski.tote.diff.EffectiveDelta#getForwardDelta()
+  * @see name.livitski.databag.diff.EffectiveDelta#getForwardDelta()
   */
  public DirectionalDeltaSource getDirectionalDelta()
  {
@@ -64,7 +64,7 @@ public class DeltaLink implements EffectiveDelta
 
  /*
   * (non-Javadoc)
-  * @see name.livitski.tote.diff.EffectiveDelta#getCommonDelta()
+  * @see name.livitski.databag.diff.EffectiveDelta#getCommonDelta()
   */
  public CommonDeltaSource getCommonDelta()
  {

@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.db.schema;
+package name.livitski.databag.db.schema;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,16 +24,16 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Map;
 
-import name.livitski.tote.app.sync.SyncService;
-import name.livitski.tote.db.AbstractDAO;
-import name.livitski.tote.db.Cursor;
-import name.livitski.tote.db.DBException;
-import name.livitski.tote.db.IncompatibleSchemaException;
-import name.livitski.tote.db.Manager;
-import name.livitski.tote.db.NoSuchRecordException;
-import name.livitski.tote.db.PreparedStatementCursor;
-import name.livitski.tote.db.PreparedStatementHandler;
-import name.livitski.tote.db.SchemaUpgrades;
+import name.livitski.databag.app.sync.SyncService;
+import name.livitski.databag.db.AbstractDAO;
+import name.livitski.databag.db.Cursor;
+import name.livitski.databag.db.DBException;
+import name.livitski.databag.db.IncompatibleSchemaException;
+import name.livitski.databag.db.Manager;
+import name.livitski.databag.db.NoSuchRecordException;
+import name.livitski.databag.db.PreparedStatementCursor;
+import name.livitski.databag.db.PreparedStatementHandler;
+import name.livitski.databag.db.SchemaUpgrades;
 
 /**
  * Provides access to {@link SyncLogDTO synchronization log records}

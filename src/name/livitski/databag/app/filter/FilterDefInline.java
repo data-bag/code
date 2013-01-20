@@ -15,14 +15,14 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.app.filter;
+package name.livitski.databag.app.filter;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import name.livitski.tote.db.schema.FilterDTO.Type;
+import name.livitski.databag.db.schema.FilterDTO.Type;
 
 /**
  * A utility for formatting {@link FilterDef filter definition} data

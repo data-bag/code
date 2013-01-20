@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.app.filter;
+package name.livitski.databag.app.filter;
 
 /**
  * Contains a filter name specification along with modifiers

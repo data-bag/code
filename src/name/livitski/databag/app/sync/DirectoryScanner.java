@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.app.sync;
+package name.livitski.databag.app.sync;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,8 +25,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import name.livitski.tote.app.filter.PathFilter;
-import name.livitski.tote.app.filter.PathMatcher;
+import name.livitski.databag.app.filter.PathFilter;
+import name.livitski.databag.app.filter.PathMatcher;
 
 /**
  * Scans a directory recursively to find all files

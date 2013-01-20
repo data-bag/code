@@ -15,23 +15,23 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.app.sync;
+package name.livitski.databag.app.sync;
 
 /**
  * Represents a course of action for {@link SyncRestoreHelper#syncToLocal}
  * to take in case of a file version conflict. The course of action can be
  * prescribed by the user and conveyed in a
- * {@link name.livitski.tote.app.Configuration} object.
+ * {@link name.livitski.databag.app.Configuration} object.
  * Otherwise, it is chosen automatically by the
  * {@link SyncRestoreHelper#analyzeFile} method.
- * @see name.livitski.tote.app.Configuration
+ * @see name.livitski.databag.app.Configuration
  * @see SyncRestoreHelper#syncToLocal
  */
 public enum ResolutionAction
 {
  /**
   * No course of action specified. When comes from
-  * {@link name.livitski.tote.app.Configuration}, this means
+  * {@link name.livitski.databag.app.Configuration}, this means
   * that the user has not chosen a course of action. 
   */
  UNKNOWN,

@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.app.sync;
+package name.livitski.databag.app.sync;
 
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -24,21 +24,21 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import name.livitski.tote.app.Configuration;
-import name.livitski.tote.app.filter.PathFilter;
-import name.livitski.tote.app.filter.PathMatcher;
-import name.livitski.tote.db.Cursor;
-import name.livitski.tote.db.DBException;
-import name.livitski.tote.db.Manager;
-import name.livitski.tote.db.NoSuchRecordException;
-import name.livitski.tote.db.Transaction;
-import name.livitski.tote.db.schema.FileDAO;
-import name.livitski.tote.db.schema.FileDTO;
-import name.livitski.tote.db.schema.NodeNameDAO;
-import name.livitski.tote.db.schema.NodeNameDTO;
-import name.livitski.tote.db.schema.VersionDAO;
-import name.livitski.tote.db.schema.VersionDTO;
-import name.livitski.tote.db.schema.VersionDAO.FileAndVersionDTO;
+import name.livitski.databag.app.Configuration;
+import name.livitski.databag.app.filter.PathFilter;
+import name.livitski.databag.app.filter.PathMatcher;
+import name.livitski.databag.db.Cursor;
+import name.livitski.databag.db.DBException;
+import name.livitski.databag.db.Manager;
+import name.livitski.databag.db.NoSuchRecordException;
+import name.livitski.databag.db.Transaction;
+import name.livitski.databag.db.schema.FileDAO;
+import name.livitski.databag.db.schema.FileDTO;
+import name.livitski.databag.db.schema.NodeNameDAO;
+import name.livitski.databag.db.schema.NodeNameDTO;
+import name.livitski.databag.db.schema.VersionDAO;
+import name.livitski.databag.db.schema.VersionDTO;
+import name.livitski.databag.db.schema.VersionDAO.FileAndVersionDTO;
 
 /**
  * Reverts shared files to a specific version or a certain point

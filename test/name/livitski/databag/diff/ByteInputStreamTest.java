@@ -15,12 +15,15 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.diff;
+package name.livitski.databag.diff;
 
 import java.io.ByteArrayInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.util.Arrays;
+
+import name.livitski.databag.diff.ByteInputStream;
+import name.livitski.databag.diff.RepeatableByteSource;
 
 import org.junit.Before;
 import org.junit.BeforeClass;

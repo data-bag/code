@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.db.schema;
+package name.livitski.databag.db.schema;
 
 import java.io.File;
 import java.sql.PreparedStatement;
@@ -27,16 +27,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 
-import name.livitski.tote.db.CachedDTO;
-import name.livitski.tote.db.CachingDAO;
-import name.livitski.tote.db.ConstraintViolationException;
-import name.livitski.tote.db.Cursor;
-import name.livitski.tote.db.DBException;
-import name.livitski.tote.db.Manager;
-import name.livitski.tote.db.NoSuchRecordException;
-import name.livitski.tote.db.PreparedStatementCursor;
-import name.livitski.tote.db.PreparedStatementHandler;
-import name.livitski.tote.db.Transaction;
+import name.livitski.databag.db.CachedDTO;
+import name.livitski.databag.db.CachingDAO;
+import name.livitski.databag.db.ConstraintViolationException;
+import name.livitski.databag.db.Cursor;
+import name.livitski.databag.db.DBException;
+import name.livitski.databag.db.Manager;
+import name.livitski.databag.db.NoSuchRecordException;
+import name.livitski.databag.db.PreparedStatementCursor;
+import name.livitski.databag.db.PreparedStatementHandler;
+import name.livitski.databag.db.Transaction;
 
 /**
  * Manages the <code>NodeName</code> table access.
@@ -152,7 +152,7 @@ public class NodeNameDAO extends CachingDAO<Long, NodeNameDTO>
  }
 
  /* (non-Javadoc)
-  * @see name.livitski.tote.db.AbstractDAO#schemaDDL()
+  * @see name.livitski.databag.db.AbstractDAO#schemaDDL()
   */
  @Override
  public String[] schemaDDL()
@@ -238,7 +238,7 @@ public class NodeNameDAO extends CachingDAO<Long, NodeNameDTO>
  }
 
  /* (non-Javadoc)
-  * @see name.livitski.tote.db.CachingDAO#deleteImpl(java.lang.Object)
+  * @see name.livitski.databag.db.CachingDAO#deleteImpl(java.lang.Object)
   */
  @Override
  protected void deleteImpl(final Long id) throws DBException
@@ -266,7 +266,7 @@ public class NodeNameDAO extends CachingDAO<Long, NodeNameDTO>
  }
 
  /* (non-Javadoc)
-  * @see name.livitski.tote.db.CachingDAO#insertImpl(name.livitski.tote.db.CachedDTO)
+  * @see name.livitski.databag.db.CachingDAO#insertImpl(name.livitski.databag.db.CachedDTO)
   */
  @Override
  protected void insertImpl(final NodeNameDTO object) throws DBException
@@ -313,7 +313,7 @@ public class NodeNameDAO extends CachingDAO<Long, NodeNameDTO>
  }
 
  /* (non-Javadoc)
-  * @see name.livitski.tote.db.CachingDAO#loadImpl(java.lang.Object)
+  * @see name.livitski.databag.db.CachingDAO#loadImpl(java.lang.Object)
   */
  @Override
  protected NodeNameDTO loadImpl(Long id) throws DBException
@@ -325,7 +325,7 @@ public class NodeNameDAO extends CachingDAO<Long, NodeNameDTO>
  }
 
  /* (non-Javadoc)
-  * @see name.livitski.tote.db.CachingDAO#updateImpl(name.livitski.tote.db.CachedDTO)
+  * @see name.livitski.databag.db.CachingDAO#updateImpl(name.livitski.databag.db.CachedDTO)
   */
  @Override
  protected void updateImpl(NodeNameDTO object) throws DBException
@@ -386,7 +386,7 @@ public class NodeNameDAO extends CachingDAO<Long, NodeNameDTO>
   }
 
   /* (non-Javadoc)
-   * @see name.livitski.tote.db.StatementHandler#legend()
+   * @see name.livitski.databag.db.StatementHandler#legend()
    */
   @Override
   protected String legend()

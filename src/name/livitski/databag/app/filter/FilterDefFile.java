@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.app.filter;
+package name.livitski.databag.app.filter;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -35,14 +35,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import name.livitski.tote.db.DBException;
-import name.livitski.tote.db.schema.FilterDTO;
+import name.livitski.databag.db.DBException;
+import name.livitski.databag.db.schema.FilterDTO;
 
 /**
  * Represents a file or a pair of streams that contain {@link FilterDef filter definition}
  * data. Filter definitions are stored in text files. Lines that start with <code>#</code>
  * are comments. Lines that start with <code>#:</code> followed by a
- * {@link name.livitski.tote.db.schema.FilterDTO.Type type name} (case-insensitive)
+ * {@link name.livitski.databag.db.schema.FilterDTO.Type type name} (case-insensitive)
  * and a <code>:</code> designated sections of a filter containing records of a certain type.
  * Each non-empty line within those sections is a filter record, such as an include or
  * exclude pattern.

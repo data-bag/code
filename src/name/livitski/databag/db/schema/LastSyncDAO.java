@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.db.schema;
+package name.livitski.databag.db.schema;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,14 +24,14 @@ import java.sql.Types;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import name.livitski.tote.db.AbstractDAO;
-import name.livitski.tote.db.DBException;
-import name.livitski.tote.db.IncompatibleSchemaException;
-import name.livitski.tote.db.Manager;
-import name.livitski.tote.db.NoSuchRecordException;
-import name.livitski.tote.db.PreparedStatementHandler;
-import name.livitski.tote.db.SchemaUpgrades;
-import name.livitski.tote.db.Transaction;
+import name.livitski.databag.db.AbstractDAO;
+import name.livitski.databag.db.DBException;
+import name.livitski.databag.db.IncompatibleSchemaException;
+import name.livitski.databag.db.Manager;
+import name.livitski.databag.db.NoSuchRecordException;
+import name.livitski.databag.db.PreparedStatementHandler;
+import name.livitski.databag.db.SchemaUpgrades;
+import name.livitski.databag.db.Transaction;
 
 /**
  * Manages records in the <code>LastSync</code> table.

@@ -15,14 +15,14 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.app.filter;
+package name.livitski.databag.app.filter;
 
 import java.io.IOException;
 import java.util.List;
 
-import name.livitski.tote.db.DBException;
-import name.livitski.tote.db.schema.FilterDTO;
-import name.livitski.tote.db.schema.FilterDTO.Type;
+import name.livitski.databag.db.DBException;
+import name.livitski.databag.db.schema.FilterDTO;
+import name.livitski.databag.db.schema.FilterDTO.Type;
 
 /**
  * Defines a filter used to decide whether a file should be processed or

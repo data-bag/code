@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.db;
+package name.livitski.databag.db;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -37,7 +37,7 @@ public class BreadthFirstSearch<T> extends SimpleGraphSearch<T>
  }
 
  /* (non-Javadoc)
-  * @see name.livitski.tote.db.SimpleGraphSearch#addNode(java.lang.Object)
+  * @see name.livitski.databag.db.SimpleGraphSearch#addNode(java.lang.Object)
   */
  @Override
  protected void addNode(T node)
@@ -46,7 +46,7 @@ public class BreadthFirstSearch<T> extends SimpleGraphSearch<T>
  }
 
  /* (non-Javadoc)
-  * @see name.livitski.tote.db.SimpleGraphSearch#pickNode()
+  * @see name.livitski.databag.db.SimpleGraphSearch#pickNode()
   */
  @Override
  protected T pickNode()

@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.db;
+package name.livitski.databag.db;
 
 import java.sql.SQLException;
 import java.util.logging.Logger;
@@ -150,6 +150,28 @@ public abstract class AbstractDAO
  }
 
  /**
+  * Extracts a class name suitable for the database storage. For classes
+  * in this package and its descendants, relative names are used. Such
+  * names begin with a dot (<code>'.'</code>). A persistent name that
+  * begins with a Java identifier is treated as absolute class name. 
+  * @param daoClass the class to extract the persistent name from
+  * @return the name string
+  */
+ protected final String persistentClassName(Class<? extends AbstractDAO> daoClass)
+ {
+  String name = daoClass.getName();
+  Package rootPkg = AbstractDAO.class.getPackage();
+  if (null != rootPkg)
+  {
+   String prefix = rootPkg.getName();
+   int prefixLength = prefix.length();
+   if (name.length() > prefixLength && '.' == name.charAt(prefixLength) && name.startsWith(prefix))
+    name = name.substring(prefixLength);
+  }
+  return name;
+ }
+
+ /**
   * Returns the logging facility of this DAO's {@link Manager}.
   * @see Manager#log() 
   */
@@ -182,7 +204,7 @@ public abstract class AbstractDAO
   runner.execute();
 
   SchemaVersionDTO record = new SchemaVersionDTO();
-  record.setDaoClassName(getClass().getName());
+  record.setDaoClassName(persistentClassName(getClass()));
   record.setVersion(getCurrentVersion());
   versionDAO.insert(record);
  }

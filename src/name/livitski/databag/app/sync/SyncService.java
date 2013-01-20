@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.app.sync;
+package name.livitski.databag.app.sync;
 
 import java.io.Closeable;
 import java.io.File;
@@ -26,23 +26,23 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import name.livitski.tote.app.Configuration;
-import name.livitski.tote.app.filter.FilterSpec;
-import name.livitski.tote.app.filter.PathFilter;
-import name.livitski.tote.app.filter.PathMatcher;
-import name.livitski.tote.db.Cursor;
-import name.livitski.tote.db.DBException;
-import name.livitski.tote.db.Manager;
-import name.livitski.tote.db.schema.FileDAO;
-import name.livitski.tote.db.schema.FileDTO;
-import name.livitski.tote.db.schema.LastSyncDAO;
-import name.livitski.tote.db.schema.LastSyncDTO;
-import name.livitski.tote.db.schema.NodeNameDAO;
-import name.livitski.tote.db.schema.ReplicaDTO;
-import name.livitski.tote.db.schema.SyncLogDAO;
-import name.livitski.tote.db.schema.VersionDAO;
+import name.livitski.databag.app.Configuration;
+import name.livitski.databag.app.filter.FilterSpec;
+import name.livitski.databag.app.filter.PathFilter;
+import name.livitski.databag.app.filter.PathMatcher;
+import name.livitski.databag.db.Cursor;
+import name.livitski.databag.db.DBException;
+import name.livitski.databag.db.Manager;
+import name.livitski.databag.db.schema.FileDAO;
+import name.livitski.databag.db.schema.FileDTO;
+import name.livitski.databag.db.schema.LastSyncDAO;
+import name.livitski.databag.db.schema.LastSyncDTO;
+import name.livitski.databag.db.schema.NodeNameDAO;
+import name.livitski.databag.db.schema.ReplicaDTO;
+import name.livitski.databag.db.schema.SyncLogDAO;
+import name.livitski.databag.db.schema.VersionDAO;
 
-import static name.livitski.tote.app.sync.ResolutionAction.*;
+import static name.livitski.databag.app.sync.ResolutionAction.*;
 
 /**
  * Performs synchronization of the files within a {@link ReplicaDTO replica}

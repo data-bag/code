@@ -15,7 +15,7 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.db.schema;
+package name.livitski.databag.db.schema;
 
 import java.io.File;
 import java.util.HashMap;
@@ -27,9 +27,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*; 
 
-import name.livitski.tote.db.AbstractDBTest;
-import name.livitski.tote.db.DBException;
-import name.livitski.tote.db.Manager;
+import name.livitski.databag.db.AbstractDBTest;
+import name.livitski.databag.db.DBException;
+import name.livitski.databag.db.Manager;
+import name.livitski.databag.db.schema.NodeNameDAO;
+import name.livitski.databag.db.schema.NodeNameDTO;
 
 /**
  * Tests {@link NodeNameDAO} and {@link NodeNameDTO} classes.

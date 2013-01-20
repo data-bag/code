@@ -15,22 +15,22 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.app.info;
+package name.livitski.databag.app.info;
 
 import java.sql.Timestamp;
 import java.util.Map;
 
-import name.livitski.tote.app.ConfigurableService;
-import name.livitski.tote.app.Configuration;
-import name.livitski.tote.app.filter.FilterSpec;
-import name.livitski.tote.db.Cursor;
-import name.livitski.tote.db.DBException;
-import name.livitski.tote.db.Function;
-import name.livitski.tote.db.Manager;
-import name.livitski.tote.db.WrapperCursor;
-import name.livitski.tote.db.schema.ReplicaDTO;
-import name.livitski.tote.db.schema.SyncLogDAO;
-import name.livitski.tote.db.schema.SyncLogDTOWithRelatedEntities;
+import name.livitski.databag.app.ConfigurableService;
+import name.livitski.databag.app.Configuration;
+import name.livitski.databag.app.filter.FilterSpec;
+import name.livitski.databag.db.Cursor;
+import name.livitski.databag.db.DBException;
+import name.livitski.databag.db.Function;
+import name.livitski.databag.db.Manager;
+import name.livitski.databag.db.WrapperCursor;
+import name.livitski.databag.db.schema.ReplicaDTO;
+import name.livitski.databag.db.schema.SyncLogDAO;
+import name.livitski.databag.db.schema.SyncLogDTOWithRelatedEntities;
 
 /**
  * Provides access to logs of the application's operations,

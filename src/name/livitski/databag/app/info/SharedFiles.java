@@ -15,30 +15,30 @@
  *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
  */
     
-package name.livitski.tote.app.info;
+package name.livitski.databag.app.info;
 
 import java.io.File;
 import java.io.IOException;
 
-import name.livitski.tote.app.ConfigurableService;
-import name.livitski.tote.app.Configuration;
-import name.livitski.tote.app.filter.PathFilter;
-import name.livitski.tote.db.ConstraintViolationException;
-import name.livitski.tote.db.Cursor;
-import name.livitski.tote.db.CursorSequence;
-import name.livitski.tote.db.DBException;
-import name.livitski.tote.db.EmptyCursor;
-import name.livitski.tote.db.Filter;
-import name.livitski.tote.db.FilteredCursor;
-import name.livitski.tote.db.Function;
-import name.livitski.tote.db.Manager;
-import name.livitski.tote.db.WrapperCursor;
-import name.livitski.tote.db.schema.FileDAO;
-import name.livitski.tote.db.schema.FileDTO;
-import name.livitski.tote.db.schema.NodeNameDAO;
-import name.livitski.tote.db.schema.NodeNameDTO;
-import name.livitski.tote.db.schema.ReplicaDTO;
-import name.livitski.tote.db.schema.VersionDAO;
+import name.livitski.databag.app.ConfigurableService;
+import name.livitski.databag.app.Configuration;
+import name.livitski.databag.app.filter.PathFilter;
+import name.livitski.databag.db.ConstraintViolationException;
+import name.livitski.databag.db.Cursor;
+import name.livitski.databag.db.CursorSequence;
+import name.livitski.databag.db.DBException;
+import name.livitski.databag.db.EmptyCursor;
+import name.livitski.databag.db.Filter;
+import name.livitski.databag.db.FilteredCursor;
+import name.livitski.databag.db.Function;
+import name.livitski.databag.db.Manager;
+import name.livitski.databag.db.WrapperCursor;
+import name.livitski.databag.db.schema.FileDAO;
+import name.livitski.databag.db.schema.FileDTO;
+import name.livitski.databag.db.schema.NodeNameDAO;
+import name.livitski.databag.db.schema.NodeNameDTO;
+import name.livitski.databag.db.schema.ReplicaDTO;
+import name.livitski.databag.db.schema.VersionDAO;
 
 /**
  * Provides information about the files on a shared medium,
