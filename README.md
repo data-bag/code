@@ -7,7 +7,7 @@ synchronization tool*. Its top-level components are:
         src/           Data-bag source files.
         lib/           Run-time libraries used by Data-bag.
         LICENSE/       Legal documents with the project's licensing terms.
-        NOTICE         A summary of licenses that apply to Data-bag with
+        NOTICE.md      A summary of licenses that apply to Data-bag with
                         references to detailed legal documents.
         build.xml      Configuration file for the tool (ANT) that builds the
                         project's executable and other artifacts.
