@@ -1,6 +1,6 @@
 /**
  *  Copyright (C) 1999-2006 Apache Software Foundation, its contributors,
- *  and 2010-2012 Konstantin Livitski
+ *  and 2010-2013 Konstantin Livitski
  *
  * This class contains code from file
  * 

@@ -1,27 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- ====================================================================== 
-    Copyright (C) 2010-2012 Konstantin Livitski
+    Copyright 2010-2013 Konstantin Livitski
 
     This program is free software: you can redistribute it and/or modify
-    it under the terms of the Tote Project License.
+    it under the terms of the Data-bag Project License.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    Tote Project License for more details.
+    Data-bag Project License for more details.
 
-    You should find a copy of the Tote Project License in the "tote.txt" file
-    in the LICENSE directory of this package or repository.  If not, see
-    <http://www.livitski.name/projects/tote/license>. If you have any
-    questions or concerns, contact me at <http://www.livitski.name/contact>. 
+    You should find a copy of the Data-bag Project License in the
+    `data-bag.md` file in the `LICENSE` directory
+    of this package or repository.  If not, see
+    <http://www.livitski.name/projects/data-bag/license>. If you have any
+    questions or concerns, contact the project's maintainers at
+    <http://www.livitski.name/contact>. 
      ====================================================================== -->
-<project name="Tote" default="jar">
+<project name="Data-bag" default="jar">
 	<property name="source.dir" location="${basedir}/src" />
 	<property name="test.dir" location="${basedir}/test" />
 	<property name="lib.dir" location="${basedir}/lib" />
 	<property name="build.dir.rel" value="build" />
 	<property name="build.dir" location="${basedir}/${build.dir.rel}" />
-	<property name="dest.jar.rel" value="tote.jar" />
+	<property name="dest.jar.rel" value="databag.jar" />
 	<property name="dest.jar.path" location="${basedir}/${dest.jar.rel}" />
 	<property name="javadoc.dir.rel" value="javadoc" />
 	<property name="javadoc.dir" location="${basedir}/${javadoc.dir.rel}" />
@@ -56,14 +58,14 @@
     		<manifest>
     			<attribute name="Main-Class" value="${classes.main}"/>
     		    <section name="name/livitski/databag/">
-    		      <attribute name="Specification-Title" value="Tote"/>
+    		      <attribute name="Specification-Title" value="${ant.project.name}"/>
     		      <attribute name="Specification-Version" value="${version}"/>
     		      <attribute name="Specification-Vendor" value="${author}"/>
     		      <attribute name="Implementation-Version" value="${version}.${version.time}"/> 
     		      <attribute name="Implementation-Vendor" value="${author}"/>
     		    </section>
     		    <section name="name/livitski/databag/cli/">
-    		      <attribute name="Implementation-Title" value="Tote command-line launcher"/>
+    		      <attribute name="Implementation-Title" value="${ant.project.name} command-line launcher"/>
     		      <attribute name="Implementation-Version" value="${version}.${version.time}"/> 
     		      <attribute name="Implementation-Vendor" value="${author}"/>
     		    </section>
@@ -95,7 +97,7 @@
 </echo>
     	<echo file="${git.gitignore.file}" append="true" message="/${build.dir.rel}">
 </echo>	<echo file="${git.gitignore.file}" append="true" message="/${javadoc.dir.rel}">
-</echo>	<echo file="${git.gitignore.file}" append="true" message="/${dest.jar.rel}">
+</echo>	<echo file="${git.gitignore.file}" append="true" message="/*.jar">
 </echo>	
 	</target>
 
@@ -103,7 +105,7 @@
     	<delete dir="${javadoc.dir}" quiet="true" />
     	<mkdir dir="${javadoc.dir}" />
         <javadoc access="protected" author="true" classpathref="libs"
-        	destdir="${javadoc.dir}" doctitle="Tote project"
+        	destdir="${javadoc.dir}" doctitle="${ant.project.name} Project"
         	nodeprecated="false" nodeprecatedlist="false"
         	noindex="false" nonavbar="false" notree="false"
         	packagenames="name.livitski.tools,name.livitski.databag.cli,name.livitski.databag.db,name.livitski.databag.db.schema,name.livitski.databag.app,name.livitski.databag.app.sync,name.livitski.databag.app.maint,name.livitski.databag.app.filter,name.livitski.databag.diff,name.livitski.databag.app.info"

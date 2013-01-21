@@ -1,18 +1,20 @@
 /**
- *  Copyright (C) 2010-2012 Konstantin Livitski
+ *  Copyright 2010-2013 Konstantin Livitski
  *
  *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the Tote Project License.
+ *  it under the terms of the Data-bag Project License.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  Tote Project License for more details.
+ *  Data-bag Project License for more details.
  *
- *  You should find a copy of the Tote Project License in the "tote.txt" file
- *  in the LICENSE directory of this package or repository.  If not, see
- *  <http://www.livitski.name/projects/tote/license>. If you have any
- *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
+ *  You should find a copy of the Data-bag Project License in the
+ *  `data-bag.md` file in the `LICENSE` directory
+ *  of this package or repository.  If not, see
+ *  <http://www.livitski.name/projects/data-bag/license>. If you have any
+ *  questions or concerns, contact the project's maintainers at
+ *  <http://www.livitski.name/contact>. 
  */
     
 package name.livitski.databag.db;
@@ -136,15 +138,36 @@ public class Manager extends Logging
   if (null != jdbc) return;
   if (!location.isDirectory())
    throw new DBException("There is no valid " + this);
-  String url = baseURL(false) + MUSTEXIST_SUFFIX;
-  try
+  Throwable status = new RuntimeException("No database names have been configured");
+  Logger log = log();
+  for (int legacyIndex = 0; DB_NAMES.length > legacyIndex; )
   {
-   establishConnection(url);
+   String url = baseURL(false, legacyIndex) + MUSTEXIST_SUFFIX;
+   boolean isLast = DB_NAMES.length <= ++legacyIndex;
+   log.finer("Trying database at \"" + url + "\" ...");
+   try
+   {
+    establishConnection(url, !isLast);
+    status = null;
+    break;
+   }
+   catch (SQLException fail)
+   {
+    if (org.h2.constant.ErrorCode.DATABASE_NOT_FOUND_1 != fail.getErrorCode())
+    {
+     status = fail;
+     if (!isLast)
+      clearPassword();
+     break;
+    }
+    else if (!(status instanceof SQLException))
+    {
+     status = fail;
+    }
+   }
   }
-  catch (SQLException fail)
-  {
-   throw new DBException("Open failed for " + this + " (" + url + ')', fail);
-  }
+  if (null != status)
+   throw new DBException("Open failed for " + this, status);
  }
 
  public void create()
@@ -156,11 +179,11 @@ public class Manager extends Logging
    throw new DBException("Directory or file " + location + " already exists, cannot overwrite");
   if (!location.mkdir())
    throw new DBException("Create failed for database directory " + location);
-  String url = baseURL(true);
+  String url = baseURL(true, 0);
   final Logger log = log();
   try
   {
-   establishConnection(url);
+   establishConnection(url, false);
    log.info("Created database " + url);
   }
   catch (SQLException fail)
@@ -278,26 +301,22 @@ public class Manager extends Logging
     Arrays.fill(this.encryptionPassword, '\0');
    this.encryptionPassword = null;
   }
+  else if (0 == encryptionPassword.length)
+   throw new IllegalArgumentException("Encrypted database cannot have an empty password.");
   else
   {
    // encryption on - copy the password, make sure there are no spaces, and append a space
    final int length = encryptionPassword.length;
-   this.encryptionPassword = new char[length + 1];
-   char c;
-   for (int i = length; 0 < i;)
+   this.encryptionPassword = new char[length];
+   int errorPos = copyPassword(this.encryptionPassword, encryptionPassword);
+   if (0 <= errorPos)
    {
-    c = encryptionPassword[--i]; 
-    if (' ' == c)
-    {
-     Arrays.fill(this.encryptionPassword, '\0');
-     this.encryptionPassword = new char[0];
-     throw new IllegalArgumentException(
-       "Space character is not allowed in a password, but found at position " + i);
-    }
-    else
-     this.encryptionPassword[i] = c;
+    Arrays.fill(this.encryptionPassword, '\0');
+    this.encryptionPassword = new char[0];
+    throw new IllegalArgumentException(
+      "Character code " + (int)encryptionPassword[errorPos]
+	+ " is not allowed in a password, but found at position " + errorPos);
    }
-   this.encryptionPassword[length] = c = ' ';
   }
  }
 
@@ -331,10 +350,25 @@ public class Manager extends Logging
   }
  }
 
+ public static String currentAndLegacyDBNamesSQLSchemaList()
+ {
+  StringBuilder buf = new StringBuilder();
+  for (String name : DB_NAMES)
+  {
+   if (0 < buf.length())
+    buf.append(", ");
+   buf.append('\'').append(name.toUpperCase()).append('\'');
+  }
+  return buf.toString();
+ }
+
  public static final int DEFAULT_LOB_THRESHOLD = 3500;
  public static final String DEFAULT_COMPRESSION_TYPE = "DEFLATE";
  public static final String DEFAULT_CIPHER = "AES";
- public static final String DB_NAME = "tote";
+ public static final String DB_NAMES[] = {
+  "databag", // the current name is always first, legacy names follow
+  "tote"
+ };
  public static final String DEFAULT_SCHEMA= "PUBLIC";
 
  protected final Connection getJdbc()
@@ -387,12 +421,12 @@ public class Manager extends Logging
  static final String COMPRESS_LOB_SUFFIX = ";COMPRESS_LOB=";
  static final String ENCRYPT_SUFFIX = ";CIPHER=";
 
- private String baseURL(boolean create)
+ private String baseURL(boolean create, int legacyVersion)
  {
   StringBuilder base = new StringBuilder(1024)
-  .append(URL_PREFIX)
-  .append(location.getAbsolutePath()).append(java.io.File.separator).append(DB_NAME)
-  .append(SERIALIZABLE_SUFFIX);
+   .append(URL_PREFIX)
+   .append(location.getAbsolutePath()).append(java.io.File.separator).append(DB_NAMES[legacyVersion])
+   .append(SERIALIZABLE_SUFFIX);
   if (create || null != compressionType)
    base.append(COMPRESS_LOB_SUFFIX).append(getCompressionType());
   if (create || 0 <= inPlaceLobThreshold)
@@ -402,7 +436,7 @@ public class Manager extends Logging
   return base.toString();
  }
 
- private void establishConnection(String url) throws SQLException
+ private void establishConnection(String url, boolean willRetryOnFailure) throws SQLException
  {
   if (!isEncryptionEnabled())
    jdbc = DriverManager.getConnection(url);
@@ -410,19 +444,69 @@ public class Manager extends Logging
    throw new IllegalStateException(
      "The password is no longer available. Please set the password again before reconnecting.");
   else
+  {
+   Throwable status = null;
+   final int length = encryptionPassword.length;
+   final char[] passwordCopy = new char[length + 1];
    try
    {
+    int errorPos = copyPassword(passwordCopy, encryptionPassword);
+    if (0 <= errorPos)
+     throw new IllegalArgumentException(
+       "Character code " + (int)encryptionPassword[errorPos]
+ 	+ " is not allowed in a password, but found at position " + errorPos);
+    passwordCopy[length] = ' ';
     // prepare the file password
     Properties properties = new Properties();
     // this violates the Properties contract, but does not leave copies of password in memory 
-    properties.put("password", encryptionPassword);
+    properties.put("password", passwordCopy);
     jdbc = DriverManager.getConnection(url, properties);
+   }
+   catch (Throwable failure)
+   {
+    status = failure;
+    if (failure instanceof Error)
+     throw (Error)failure;
+    if (failure instanceof SQLException)
+     throw (SQLException)failure;
+    if (failure instanceof RuntimeException)
+     throw (RuntimeException)failure;    
+    throw new Error("Unexpected object type thrown while connecting to \"" + url + '"', failure);    
    }
    finally
    {
-    Arrays.fill(encryptionPassword, '\0');
-    encryptionPassword = new char[0];
+    Arrays.fill(passwordCopy, '\0');
+    if (!willRetryOnFailure || null == status)
+     clearPassword();
    }
+  }
+ }
+
+ private void clearPassword()
+ {
+  if (null != encryptionPassword)
+   Arrays.fill(encryptionPassword, '\0');
+  encryptionPassword = new char[0];
+ }
+
+ /**
+  * @return the index of a character that violated the password's constraints,
+  * or a negative value on success
+  */
+ private int copyPassword(char[] buffer, char[] encryptionPassword)
+ {
+  final int length = encryptionPassword.length;
+  char c;
+  for (int i = length; 0 < i;)
+  {
+   c = encryptionPassword[--i]; 
+   if (' ' == c)
+    return i;
+   else
+    buffer[i] = c;
+  }
+  c = ' ';
+  return -1;
  }
 
  private boolean schemaEvolutionAllowed;

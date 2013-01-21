@@ -1,18 +1,20 @@
 /**
- *  Copyright (C) 2010-2012 Konstantin Livitski
+ *  Copyright 2010-2013 Konstantin Livitski
  *
  *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the Tote Project License.
+ *  it under the terms of the Data-bag Project License.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  Tote Project License for more details.
+ *  Data-bag Project License for more details.
  *
- *  You should find a copy of the Tote Project License in the "tote.txt" file
- *  in the LICENSE directory of this package or repository.  If not, see
- *  <http://www.livitski.name/projects/tote/license>. If you have any
- *  questions or concerns, contact me at <http://www.livitski.name/contact>. 
+ *  You should find a copy of the Data-bag Project License in the
+ *  `data-bag.md` file in the `LICENSE` directory
+ *  of this package or repository.  If not, see
+ *  <http://www.livitski.name/projects/data-bag/license>. If you have any
+ *  questions or concerns, contact the project's maintainers at
+ *  <http://www.livitski.name/contact>. 
  */
     
 package name.livitski.databag.cli;
@@ -286,7 +288,7 @@ public class Launcher extends Logging
 	+ " must be relative, got: " + mpath);
    }
   }
-  return null == mpath ? new File("totedb") : mpath;
+  return null == mpath ? new File(Manager.DB_NAMES[0]) : mpath;
  }
 
  public Level getRequestedLogLevel()
@@ -696,7 +698,8 @@ public class Launcher extends Logging
   }
  }
 
- public static final String LOCATOR_PROPERTIES_FILE = ".tote";
+ public static final String LOCATOR_PROPERTIES_FILE = ".databag";
+ public static final String LEGACY_LOCATOR_PROPERTIES_FILE = ".tote";
 
  public static final String DEFAULT_LOCATOR_PROPERTY = "database.default";
 
@@ -866,6 +869,8 @@ public class Launcher extends Logging
   File medium = getMedium();
   Properties locator = new Properties();
   File locFile = new File(medium, LOCATOR_PROPERTIES_FILE);
+  if (!locFile.exists())
+   locFile = new File(medium, LEGACY_LOCATOR_PROPERTIES_FILE);
   InputStream locStream = null;
   try
   {
@@ -910,6 +915,10 @@ public class Launcher extends Logging
  {
   File medium = getMedium();
   String path = getMpath().getPath();
+  if (!medium.exists() && medium.mkdir())
+  {
+   log().info("Created directory \"" + medium + "\" to store the new bag.");
+  }
   File location = new File(medium, path);
   initDb(location);
   db.create();
@@ -920,7 +929,7 @@ public class Launcher extends Logging
   try
   {
    locStream = new FileOutputStream(locFile);
-   locator.store(locStream, "Tote shared storage locator");
+   locator.store(locStream, "data-bag storage locator");
   } catch (IOException e)
   {
    log().log(Level.WARNING,
@@ -1380,13 +1389,14 @@ public class Launcher extends Logging
  private static final String USER_DIR_PROPERTY = "user.dir";
 
  private static final String[] BANNER = {
-   "Tote - shared storage synchronization and change tracking tool, v."
+   "Data-bag: file synchronization, backup, and change tracking tool, v."
      + Launcher.class.getPackage().getImplementationVersion(),
    "Copyright 2010-13 Konstantin Livitski and others.",
-   "See file \"LICENSE/data-bag.md\" for applicable terms.",
+   "See file \"LICENSE/data-bag.md\" for applicable terms,",
+   " http://data-bag.org to learn more about the project.",
    "" };
 
- private static final String SYNTAX = "java -jar tote.jar [options] command [arguments]";
+ private static final String SYNTAX = "java -jar databag.jar [options] command [arguments]";
 
  private static final String HEADER = "\n\nOptions:"
    + "\n [-d medium] [--create] [-C path [--default]] [-A action]"
@@ -1521,7 +1531,7 @@ public class Launcher extends Logging
 	   + DropType.FILTER
 	   + " type requires a --"
 	   + FILTER_OPTION
-	   + " option that tells Tote what filter to drop. Built-in filter \""
+	   + " option that tells data-bag what filter to drop. Built-in filter \""
 	   + FilterFactory.ALL_FILTER
 	   + "\" cannot be dropped. If there are replicas that use"
 	   + " the filter being dropped as their default filter, the command will fail"
@@ -1613,7 +1623,7 @@ public class Launcher extends Logging
      .withDescription(
        "Synchronizes file(s) on the shared medium with the current replica. This command runs"
          + " by default if you have selected the shared medium with --" + MEDIUM_OPTION
-         + ", informed Tote about the current replica, either using --" + LOCAL_OPTION
+         + ", informed data-bag about the current replica, either using --" + LOCAL_OPTION
          + " or by designating the default replica, and did not enter any other command on"
          + " the command line. When you enter this command explicitly, you may append it "
          + " with a pattern argument to limit the operation to a subset of files within"
@@ -1670,34 +1680,34 @@ public class Launcher extends Logging
        .hasOptionalArgs()
        .withArgName("key-source")
        .withDescription(
-	 "Tells Tote to use encryption when creating or opening the shared store."
+	 "Tells data-bag to use encryption when creating or opening the shared store."
 	 + " To enable encryption on a shared medium, use this option when"
 	 + " you create a store with --" + CREATE_OPTION + " switch."
 	 + " Once a store is encrypted, the key and cipher remain fixed."
 	 + " You have to include --" + ENCRYPT_OPTION + " option with the same key and"
 	 + " cipher every time you use that store. To change encryption parameters,"
 	 + " use the org.h2.tools.ChangeFileEncryption utility included"
-	 + " with the Tote's distribution. That utility also allows you to encrypt or"
+	 + " with the data-bag distribution. That utility also allows you to encrypt or"
 	 + " decrypt an existing store. You can place the encryption key on the"
 	 + " command line, have it read from standard input, or enter it"
-	 + " interactively when Tote starts."
+	 + " interactively when data-bag starts."
 	 + " An optional argument that follows --" + ENCRYPT_OPTION + " selects"
-	 + " an encryption key or its source. If that argument is the word 'key', Tote"
+	 + " an encryption key or its source. If that argument is the word 'key', data-bag"
 	 + " will use the next command line argument as the key."
 //	 + " The 'file' argument value followed by a file"
-//	 + " name tells Tote to read the encryption key from that file. Since the encryption key"
+//	 + " name tells data-bag to read the encryption key from that file. Since the encryption key"
 //	 + " is read as plain text, you have to make sure that access to that file is restricted."
 //	 + " You may want to store the key file in an encrypted format if your system supports that."
-//	 + " Tote will use the entire file as a password string, including all end-of-line sequences"
+//	 + " Data-bag will use the entire file as a password string, including all end-of-line sequences"
 //	 + " in it."
-	 + " If you enter the 'ask' string as the argument, Tote will"
+	 + " If you enter the 'ask' string as the argument, data-bag will"
 	 + " attempt to ask you for password interactively. That only works with"
-	 + " Java 6 or newer when Tote is run from a shell without input or output redirection."
-	 + " Finally, you may have Tote  read the key from standard input by entering 'stdin'"
-	 + " argument. If you do that, your input will be shown on screen. By default, Tote"
+	 + " Java 6 or newer when data-bag is run from a shell without input or output redirection."
+	 + " Finally, you may have data-bag  read the key from standard input by entering 'stdin'"
+	 + " argument. If you do that, your input will be shown on screen. By default, data-bag"
 	 + " will try to use the console and fall back to the standard input if the console"
 	 + " is unavailable."
-	 + " Regardless of how Tote obtains the encryption key, it will not accept keys that"
+	 + " Regardless of how data-bag obtains the encryption key, it will not accept keys that"
 	 + " contain a space character (ASCII 32). If the password is entered interactively or"
 	 + " read from the standard input, it cannot contain end-of-line sequences either."
 	 + " You can append " + CIPHER_OPTION + " option to --" + ENCRYPT_OPTION 
@@ -1813,7 +1823,7 @@ public class Launcher extends Logging
 	   + "Lists that contain spaces must be properly escaped to prevent the operating "
 	   + "system from treating them as multiple arguments. To omit one of the lists, "
 	   + "use either an empty argument or a single path delimiter. If the inclusion "
-	   + "list is omitted or empty, Tote implies an include-all pattern.")
+	   + "list is omitted or empty, data-bag implies an include-all pattern.")
        .create())
 
    .addOption(null, NOBANNER_OPTION, false,
@@ -1906,7 +1916,7 @@ public class Launcher extends Logging
      OptionBuilder
        .withLongOpt(SCHEMA_EVOLUTION_OPTION)
        .withDescription(
-	 "Enables schema evolution for databases created by previous versions of Tote."
+	 "Enables schema evolution for databases created by previous versions of data-bag."
 	   + " Please remember to back up your database before using this option."
 	   + " That will help you recover from problems during the upgrade.")
        .create())

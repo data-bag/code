@@ -42,18 +42,19 @@ repository (_working tree_), and run ANT:
 
         ant
 
-The result is a JAR file `tote.jar` with statically-linked runtime libraries.
+The result is a JAR file `databag.jar` with statically-linked runtime
+libraries.
 
 
 Running *Data-bag*
 ==================
 
 As of now, the only interface to *Data-bag* is command line. The
-statically-linked `tote.jar` built using the above instructions does not
+statically-linked `databag.jar` built using the above instructions does not
 require any additional Java configuration to run. For example, to test a
 *Data-bag* binary built at the root of your working tree, run:
 
-        java -jar tote.jar -?
+        java -jar databag.jar -?
 
 You should see verbose output explaining the tool's command line syntax and
 describing most of its options. Please refer to the *Data-bag* manual for further
