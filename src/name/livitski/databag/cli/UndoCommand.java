@@ -63,16 +63,13 @@ public class UndoCommand extends PointInTimeAbstractCommand
  	throws Exception
  {
   blockFileAndVersionIds("reverting changes to multiple files");
-  ReplicaInfo replica = getCurrentReplica();
   Boolean caseSensitivity = checkReplicasCaseSensitivity();
   PathMatcher namePattern = new PathMatcher(patternString,
     null == caseSensitivity ? true : caseSensitivity);
   Timestamp restorePoint = getAsOfTime();
   UndoService undoService = getUndoService();
-  if (null != replica)
-   undoService.setFilterSpecReplica(replica.getId());
   undoService.undo(namePattern, restorePoint);
-  if (!noSync && null != replica)
+  if (!noSync && null != getCurrentReplica())
    getSyncService().synchronize(namePattern);
  }
 
@@ -92,6 +89,9 @@ public class UndoCommand extends PointInTimeAbstractCommand
    Configuration configuration = getConfiguration();
    Manager db = getDb();
    undoService = new UndoService(db, configuration);
+   ReplicaInfo replica = getCurrentReplica();
+   if (null != replica)
+    undoService.setFilterSpecReplica(replica.getId());
   }
   return undoService;
  }

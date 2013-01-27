@@ -460,8 +460,8 @@ public class Launcher extends Logging
      {
       if (hasOption(DROP_COMMAND))
        log().warning(
- 	       "Replica at '" + local + "' shall not be created when running a --" + DROP_COMMAND 
- 		 + " command");
+ 	       "Replica at '" + local + "' shall not be created when running a --" 
+ 	       + DROP_COMMAND + " command");
       else
       {
        ReplicaManager rmgr = new ReplicaManager(db, getConfiguration());
@@ -486,11 +486,14 @@ public class Launcher extends Logging
      switch (type)
      {
      case REPLICA:
-      if (null != replica)
-       dropReplica(replica);
-      else
+      if (null == replica)
        throw new IllegalStateException("Local replica for " + user + '@' + host
- 	+ " does not exist" + (null == local ? "" : " at " + local));
+	 	+ " does not exist" + (null == local ? "" : " at " + local));
+      else if (null == local)
+       throw new IllegalArgumentException("--" + DROP_COMMAND
+	 + " requires an explicit replica location to drop.");
+      else
+       dropReplica(replica);
       break;
      case FILTER:
       if (hasOption(SET_OPTION) || hasOption(LOAD_OPTION))
@@ -1187,6 +1190,7 @@ public class Launcher extends Logging
  {
   PrintStream out = getOutputStream();
   SharedFiles query = new SharedFiles(db, getConfiguration());
+  log().info("Applying " + query.getEffectiveFilterSpec());
   Cursor<File> list = null;
   try
   {
@@ -1398,7 +1402,7 @@ public class Launcher extends Logging
 
  private static final String SYNTAX = "java -jar databag.jar [options] command [arguments]";
 
- private static final String HEADER = "\n\nOptions:"
+ private static final String HEADER = "\n\nCommon options:"
    + "\n [-d medium] [--create] [-C path [--default]] [-A action]"
    + "\n [--fn file-id] [--vn version-id] [-o output-file] [-N]"
    + "\n  [-F filter-name [--default | --invert]] [-v] [database-options]"
@@ -1564,7 +1568,7 @@ public class Launcher extends Logging
      .hasOptionalArg()
      .withArgName("shared-file-or-pattern")
      .withDescription(
-       "Restores file(s) from the shared medium. The argument following this option must either be"
+       "Restores file(s) from the shared medium. The argument following this command must either be"
          + " the name of a shared file to restore, or a pattern used to find shared files."
 	 + " Single-file lookup by name will only succeed if there was just one file"
 	 + " having that name, i.e. there were no histories of deleted or renamed files with the"
@@ -1576,7 +1580,7 @@ public class Launcher extends Logging
 	 + SAVE_OPTION + " option to enter the intended destination. If the destination is"
 	 + " a descendant of the local replica directory, the restored file will be automatically"
 	 + " added to the shared storage."
-	 + " When restoring multiple files, the argument to --" + SAVE_OPTION + " option must"
+	 + " When restoring multiple files, the argument to --" + SAVE_OPTION + " option should"
 	 + " point to an empty directory that is neither the local replica's directory nor any"
 	 + " of its descendants. Multiple-file restore to a target directory will fail if any"
 	 + " of the restored files have to be written to a location within the current replica."
@@ -1636,7 +1640,7 @@ public class Launcher extends Logging
    .addOption(
      OptionBuilder.withLongOpt(LOG_COMMAND).hasOptionalArgs(2).withArgName(
        "time-frame").withDescription(
-	 "Displays the log of synchronization operations with current medium."
+	 "Displays the log of operations that might have changed contents of the bag."
 	 + " Optional [time-frame] arguments formatted as yyyy-mm-dd[ hh:mm:ss[.f...]]"
 	 + " specify the beginning (inclusive) and the end (exclusive) of the"
 	 + " log fragment to print. If only one argument is present, it is treated"

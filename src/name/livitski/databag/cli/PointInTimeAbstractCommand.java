@@ -194,6 +194,9 @@ public abstract class PointInTimeAbstractCommand extends AbstractCommand
    Configuration configuration = getConfiguration();
    Manager db = getDb();
    queryService = new SharedFiles(db, configuration);
+   ReplicaInfo replica = getCurrentReplica();
+   if (null != replica)
+    queryService.setFilterSpecReplica(replica.getId());
   }
   return queryService;
  }

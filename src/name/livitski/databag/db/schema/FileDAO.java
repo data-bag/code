@@ -489,7 +489,8 @@ public class FileDAO extends AbstractDAO
   @Override
   protected void handleResults(ResultSet rs) throws SQLException, DBException
   {
-   found = rs.next();
+   rs.next();
+   found = rs.getBoolean(1);
   }
 
   @Override
@@ -735,7 +736,7 @@ public class FileDAO extends AbstractDAO
   * SQL statement for checking if there are any files with specific name.
   */
  protected static final String TEST_BYNAME_SQL =
-  "SELECT TOP 1 " + ID_FIELD_NAME + " FROM " + TABLE_NAME + " WHERE " + NAME_FIELD_NAME + " = ?";
+  "SELECT EXISTS (SELECT " + ID_FIELD_NAME + " FROM " + TABLE_NAME + " WHERE " + NAME_FIELD_NAME + " = ?)";
 
  /**
   * SQL statement for inserting file objects.

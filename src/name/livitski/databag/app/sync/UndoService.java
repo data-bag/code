@@ -112,7 +112,7 @@ public class UndoService extends SyncRestoreHelper
  }
 
  /**
-  * Returns a shared file's image a prior version of that file.
+  * Reverts the shared file's image to a prior version of that file.
   * If the version argument is a <code>null</code> or
   * {@link VersionDTO#isDeletionMark() a deletion mark}, the file
   * is marked deleted. Otherwise, if the store contains another
