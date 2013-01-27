@@ -347,7 +347,7 @@ The easiest way to define a [filter][] and store it in a [bag][] is to use the
 
 This command will create a [filter][] called _"documents and spreadsheets"_
 (the name is not case-sensitive) that matches files with suffixes `.odt`,
-`.ods`, `.doc`, and `*.xls` in the replica's directory (and none of its
+`.ods`, `.doc`, and `.xls` in the replica's directory (and none of its
 subdirectories), but excludes any files with names beginning with _Welcome_.
 Case sensitivity of the filter's [patterns][] depends on the underlying file
 system. [POSIX] file systems are usually case-sensitive. Operations that do
@@ -840,12 +840,12 @@ Concepts and terms used in this manual
 
 <dl>
 
-<dt id="term-bag">Bag</dt>
+<dt id="term-bag"><a name="term-bag"> </a>Bag</dt>
 <dd>a directory containing a database with histories of certain files
 maintained by the <em>data-bag</em> software, usually stored on a
 shared medium.</dd>
 
-<dt id="term-command">Command</dt>
+<dt id="term-command"><a name="term-command"> </a>Command</dt>
 <dd>a group of <em>data-bag</em> arguments that begins with a certain literal
 string or a shorthand string. The strings that begin <em>data-bag</em>'s
 commands on a command line, including shorthands, are listed in the <i><b>
@@ -853,18 +853,18 @@ TODO:</b> commands reference</i>. Unlike <a href="#option">options</a>,
 commands are mutually exclusive, i.e. you cannot enter more than one command on
 a command line.</dd>
 
-<dt id="term-conflict">Conflict of versions</dt>
+<dt id="term-conflict"><a name="term-conflict"> </a>Conflict of versions</dt>
 <dd>a situation of ambiguity when <em>data-bag</em> operating on a
 <a href="#term-bag">bag</a> and a <a href="#term-replica">replica</a> requires
 a <a href="#conflict-resolution">user's intervention</a> to prevent the loss of
 meaningful data.</dd>
 
-<dt id="term-default-replica">Default replica</dt>
+<dt id="term-default-replica"><a name="term-default-replica"> </a>Default replica</dt>
 <dd>a <a href="#term-replica">replica</a> used by operations with local files
 under a certain user account on a certain machine unless another replica is
 explicitly selected for the operation.</dd>
 
-<dt id="term-epoch">Epoch</dt>
+<dt id="term-epoch"><a name="term-epoch"> </a>Epoch</dt>
 <dd>the time period that began at a certain moment depending on the
 <a href="#term-bag">bag</a>'s parameters and history and continues at present.
 A <a href="#term-bag">bag</a> is not required to retain artifacts that are
@@ -872,11 +872,11 @@ older than its epoch. The epoch can be reset for a <a href="#term-bag">bag</a>
 by running the <a href="#purge-command"><code>--purge</code> command</a>.
 </dd>
 
-<dt id="term-file-number">File number</dt>
+<dt id="term-file-number"><a name="term-file-number"> </a>File number</dt>
 <dd>a unique number associated with each file's record in a
 <a href="#term-bag">bag</a>.</dd>
 
-<dt id="term-filter">Filter</dt>
+<dt id="term-filter"><a name="term-filter"> </a>Filter</dt>
 <dd>a group of rules that apply to locations of files relative to the
 <a href="#term-bag">bag</a> or <a href="#term-replica">replica</a> that stores
 them and determines eligibility of each file for an operation. The components
@@ -884,35 +884,35 @@ and application of filters are explained in the
 <a href="#filtering-files">Filtering files</a> chapter.
 </dd>
 
-<dt id="term-history-file">History of a file</dt>
+<dt id="term-history-file"><a name="term-history-file"> </a>History of a file</dt>
 <dd>a set of <a href="#term-version">version</a> records of a file in a
 <a href="#term-bag">bag</a> organized as a tree.</dd>
 
-<dt id="term-pattern">Location pattern</dt>
+<dt id="term-pattern"><a name="term-pattern"> </a>Location pattern</dt>
 <dd>a string of characters that can be matched against paths to files relative
 to a <a href="#term-bag">bag</a> or replica's root directory. <em>Data-bag</em>
 uses the <a href="http://ant.apache.org/manual/dirtasks.html#patterns">Apache
 Ant syntax for patterns</a>, which is similar to <dfn>Unix globbing</dfn>
 and allows to match files across directory levels.</dd>
 
-<dt id="term-option">Option</dt>
+<dt id="term-option"><a name="term-option"> </a>Option</dt>
 <dd>a group of <em>data-bag</em> arguments that begins with a certain literal
 string or a shorthand string. The strings that begin <em>data-bag</em>'s
 options on a command line, including shorthands, are listed in the <i><b>
 TODO:</b> options reference</i>. Options can be combined on a command line with
 <a href="#commands">commands</a> and other options.</dd>
 
-<dt id="term-replica">Replica</dt>
+<dt id="term-replica"><a name="term-replica"> </a>Replica</dt>
 <dd>a directory containing local copies of files tracked and synchronized with
 a certain <a href="#term-bag">bag</a> by the <em>data-bag</em> software. The
 <a href="#term-bag">bag</a> remembers locations of replicas for each machine
 and user account combination it is used with.</dd>
 
-<dt id="term-version-number">Version number</dt>
+<dt id="term-version-number"><a name="term-version-number"> </a>Version number</dt>
 <dd>a number associated with the <a href="#term-version">version of a
 file</a>. Version numbers are unique within the file's history.</dd>
 
-<dt id="term-version">Version of a file</dt>
+<dt id="term-version"><a name="term-version"> </a>Version of a file</dt>
 <dd>a record of the file's contents and attributes made at a certain moment in
 time, such that: (i) the file is added to the bag before its contents or
 attributes change or the file is deleted; and (ii) the file is synchronized at
@@ -920,7 +920,7 @@ least once while having these contents and attributes; and (iii) the file's
 contents or attributes are different from those of the other versions of the
 same file.</dd>
 
-<!--dt id="term-___">...</dt>
+<!--dt id="term-___"><a name="term-___"> </a>...</dt>
 <dd><b>TODO:</b> <i>Add terms to this list, in alphabetical order, as they
 are encountered</i></dd-->
 
