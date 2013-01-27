@@ -58,7 +58,8 @@ require any additional Java configuration to run. For example, to test a
 
 You should see verbose output explaining the tool's command line syntax and
 describing most of its options. Please refer to the
-[*Data-bag* manual](docs/manual.md) for further instructions.
+[*Data-bag* manual](https://github.com/data-bag/code/blob/master/docs/manual.md)
+for further information.
 
 Hacking *Data-bag*
 ==================
