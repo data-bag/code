@@ -13,7 +13,7 @@ synchronization tool*. Its top-level components are:
                         project's executable and other artifacts.
         .classpath     Eclipse configuration file for the project.
         .project       Eclipse configuration file for the project.
-        docs/          The project's documentation (COMING SOON) 
+        docs/          The project's documentation.
         test/          Source files of the project's regression tests.
 
 Building a *Data-bag* executable
@@ -57,8 +57,8 @@ require any additional Java configuration to run. For example, to test a
         java -jar databag.jar -?
 
 You should see verbose output explaining the tool's command line syntax and
-describing most of its options. Please refer to the *Data-bag* manual for further
-instructions. 
+describing most of its options. Please refer to the
+[*Data-bag* manual](docs/manual.md) for further instructions.
 
 Hacking *Data-bag*
 ==================
