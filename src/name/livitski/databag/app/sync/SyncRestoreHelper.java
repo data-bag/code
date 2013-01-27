@@ -539,7 +539,6 @@ public abstract class SyncRestoreHelper extends ConfigurableService
  	throws IOException, DBException
  {
   ResolutionAction action = resolutionActionForFile(file);
-  Logger log = log();
   VersionDTO match = null;
   if (!local.exists())
   {
@@ -558,11 +557,12 @@ public abstract class SyncRestoreHelper extends ConfigurableService
     if (match.getFileId() == file.getId() && match.getId() == file.getCurrentVersionId())
      // the file is current
      action = NONE;
-    else if (NONE == action)
-     // asked to keep stale versions 
-     log.info("Skipping stale file '" + local
-       + "' (size = " + local.length() + ", modified at " + new java.util.Date(local.lastModified())
-     + ") as requested");
+// the following doesn't seem right - we should update replicas when there are no conflicts
+//    else if (NONE == action)
+//     // asked to keep stale versions 
+//     log.info("Skipping stale file '" + local
+//       + "' (size = " + local.length() + ", modified at " + new java.util.Date(local.lastModified())
+//     + ") as requested");
     else
      // known stale version - safe to replace 
      action = DISCARD;
