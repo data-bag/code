@@ -13,7 +13,7 @@ _This manual is a work in progress. Please refer to the project's
 executable. You can obtain the summary and descriptions of all command-line
 options by running data-bag without arguments._ 
 
-_Last modified: January, 26 2013_
+_Last modified: February, 3 2013_
 
 * * *
 
@@ -418,11 +418,11 @@ will result in this output:
 >       documents and spreadsheets                                                   
 >     * no temp files                                                                
 
-_TODO: browsing a filter_
+_TODO: explain how to display a filter_
 
-_TODO: saving a filter_
+_TODO: explain how to save a filter_
 
-_TODO: loading a filter (note that --load is an option)_
+_TODO: explain how to load a filter (note that --load is an option)_
 
 
 Listing the bag's contents
@@ -452,7 +452,7 @@ information about a [filter][]. That is done by placing a keyword, such as
 `replicas`, `filters`, or `filter`, after the command. A keyword that follows
 the `--list` command can be typed using letters in any (or both) cases.  
 
-_TODO: --save option with a list command_
+_TODO: example of the --save option with a list command_
 
 <a id="version-tracking"> </a>
 
@@ -568,7 +568,8 @@ it with caution.</strong>
 </tr>
 </table>
 
-_TODO: granularity of actions, applying filters, patterns_
+_TODO: describe the granularity of actions and the use of filters and
+patterns to address that_
 
 <a id="deleted-files"> </a>
 
@@ -703,7 +704,9 @@ Note that the time argument at the end of this line is optional. If you omit
 it, _data-bag_ assumes `00:00:00` (midnight at the beginning of the calendar
 day) as the target time.
 
-_TODO: deleted files and restoration by the file number_
+_TODO: show how to restore deleted files_
+
+_TODO: explain the use of file numbers when restoring files_
 
 When you don't have a fixed [version number][] to restore, you can restore
 multiple files with relative locations matching a [pattern][]. You can use the
@@ -727,7 +730,9 @@ current replica, e.g. by following a symbolic link, the operation will fail.
 Rolling back changes to files
 -----------------------------
 
-_TODO: undo operation_
+_TODO: describe the undo operation_
+
+_TODO: explain how undo deletes and un-deletes files_
 
 <a id="purge-command"> </a>
 
@@ -849,7 +854,7 @@ shared medium.</dd>
 <dd>a group of <em>data-bag</em> arguments that begins with a certain literal
 string or a shorthand string. The strings that begin <em>data-bag</em>'s
 commands on a command line, including shorthands, are listed in the <i><b>
-TODO:</b> commands reference</i>. Unlike <a href="#option">options</a>,
+TODO: provide</b> commands reference</i>. Unlike <a href="#option">options</a>,
 commands are mutually exclusive, i.e. you cannot enter more than one command on
 a command line.</dd>
 
@@ -899,8 +904,8 @@ and allows to match files across directory levels.</dd>
 <dd>a group of <em>data-bag</em> arguments that begins with a certain literal
 string or a shorthand string. The strings that begin <em>data-bag</em>'s
 options on a command line, including shorthands, are listed in the <i><b>
-TODO:</b> options reference</i>. Options can be combined on a command line with
-<a href="#commands">commands</a> and other options.</dd>
+TODO: provide</b> options reference</i>. Options can be combined on a command
+line with <a href="#commands">commands</a> and other options.</dd>
 
 <dt id="term-replica"><a name="term-replica"> </a>Replica</dt>
 <dd>a directory containing local copies of files tracked and synchronized with
