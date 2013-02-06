@@ -221,7 +221,7 @@ case-sensitive.
 To _data-bag_, every switch is either a [command][] or an [option][]. The
 difference between the two is that you can enter multiple [options][] on
 a command line, but no more than one [command][]. The [command][] determines
-the main action that _data-bag_ will take during a run. Some options may
+the main action that _data-bag_ will take when it runs. Some options may
 conflict with others, and some may not be compatible with the [command][] you
 run. In that case you may encounter a warning or error when running _data-bag_.
 If you enter two or more commands on the command line, you will get an error,
@@ -367,15 +367,16 @@ Note that the filter name follows the `--filter` option, or its shorthand `-F`.
 Use that option to select a [filter][] to manipulate, display, or apply to an
 operation.
 
-The `--set` option expects two arguments: a list of _include_ patterns, and a
-list of _exclude_ patterns. The patterns on each list are separated by the
-system-specific path separator string. On [POSIX][]-compliant systems, that
-string consists of a colon character, ":". When a pattern on a list contains
+The `--set` option expects two arguments: a list of _include_ [patterns][], and
+a list of _exclude_ [patterns][]. The patterns on each list are separated by
+the system-specific path separator string. On [POSIX][]-compliant systems, that
+string consists of a colon character, `:`. When a pattern on a list contains
 white space, you have to escape it to make sure the entire list is interpreted
-by the shell as a single argument. To make one of the lists empty, you can
-follow the `--set` option with an empty-string argument, if your shell allows
-that, or use a single path separator string otherwise. For example, command
-line
+by the shell as a single argument. You may also have to escape the `?` and `*`
+characters within patterns to prevent their expansion by the shell. To make
+one of the lists empty, you can follow the `--set` option with an empty-string
+argument, if your shell allows that, or use a single path separator string
+otherwise. For example, command line
 
 	$ java -jar /mnt/databag.jar -d /mnt -F 'No temp files' --set : '**/*.tmp' -N
 
@@ -384,7 +385,7 @@ will create a filter that excludes all files with suffix `.tmp` anywhere in the
 
 To apply a named filter to an operation that supports filters, use the
 `--filter` option, or its shorthand `-F`. You can append the `--invert` literal
-as the second argument to `--filter`, to make the [filter][] work in reverse,
+as the second argument to `--filter` to make the [filter][] work in reverse,
 rejecting files that match it and accepting files that don't. For example,
 having defined the prevoius filter, you can list all files with suffix `.tmp`
 that are already in the [bag][] by entering the command:
