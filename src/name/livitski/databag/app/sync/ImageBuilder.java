@@ -712,7 +712,7 @@ public class ImageBuilder extends Logging implements Closeable
   * Must be more than a second to allow the other end of a disconnected pipe to react
   * to a close.
   */
- public static final long PIPE_EXIT_TIMEOUT = 1025L;
+ public static final long PIPE_EXIT_TIMEOUT = 5125L;
 
  private void checkState()
  {
