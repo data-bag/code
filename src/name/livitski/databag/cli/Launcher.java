@@ -274,21 +274,17 @@ public class Launcher extends Logging
 
  public File getMpath()
  {
-  if (null != mpath)
-   return mpath;
+  File mpath = null;
   if (hasOption(MEDIUM_OPTION)
-    && 1 < options.getOptionValues(MEDIUM_OPTION).length)
+     && 1 < options.getOptionValues(MEDIUM_OPTION).length)
   {
    mpath = new File(options.getOptionValues(MEDIUM_OPTION)[1]);
    if (mpath.isAbsolute())
-   {
-    mpath = null;
     throw new IllegalArgumentException(
       "Path to the database on shared medium " + getMedium()
-	+ " must be relative, got: " + mpath);
-   }
+      + " must be relative, got: " + mpath);
   }
-  return null == mpath ? new File(Manager.DB_NAMES[0]) : mpath;
+  return mpath;
  }
 
  public Level getRequestedLogLevel()
@@ -870,46 +866,59 @@ public class Launcher extends Logging
  protected void open() throws DBException
  {
   File medium = getMedium();
-  Properties locator = new Properties();
-  File locFile = new File(medium, LOCATOR_PROPERTIES_FILE);
-  if (!locFile.exists())
-   locFile = new File(medium, LEGACY_LOCATOR_PROPERTIES_FILE);
-  InputStream locStream = null;
-  try
+  File mpath = getMpath();
+  String path;
+  if (null != mpath)
+   path = mpath.getPath();
+  else
   {
-   locStream = new FileInputStream(locFile);
-   locator.load(locStream);
-   String value = locator.getProperty(DEFAULT_LOCATOR_PROPERTY);
-   if (value.startsWith("@"))
-    mpath = new File(value.substring(1));
-   else if (value.startsWith("/"))
+   Properties locator = new Properties();
+   File locFile = new File(medium, LOCATOR_PROPERTIES_FILE);
+   if (!locFile.exists())
+    locFile = new File(medium, LEGACY_LOCATOR_PROPERTIES_FILE);
+   InputStream locStream = null;
+   try
    {
-    File full = new File(value);
-    medium = full.getParentFile();
-    if (null == medium)
-     medium = new File("/");
-    mpath = new File(full.getName());
-   }
-   log().finest("Read mpath = " + mpath);
-  } catch (IOException e)
-  {
-   log().log(Level.FINE,
-     "Could not read the database locator from shared medium " + medium, e);
-  } finally
-  {
-   if (null != locStream)
-    try
+    locStream = new FileInputStream(locFile);
+    locator.load(locStream);
+    String value = locator.getProperty(DEFAULT_LOCATOR_PROPERTY);
+    if (value.startsWith("@"))
+     path = value.substring(1);
+    else if (value.startsWith("/"))
     {
-     locStream.close();
-    } catch (IOException thrown)
-    {
-     log().log(Level.FINE, "Error closing " + locFile, thrown);
+     File full = new File(value);
+     medium = full.getParentFile();
+     if (null == medium)
+      medium = new File("/");
+     path = full.getName();
     }
+    else
+     throw new IllegalArgumentException("Unexpected value of property "
+       + DEFAULT_LOCATOR_PROPERTY + " in file " + locFile + ": " + value);
+    log().finest("Read path = " + path);
+   }
+   catch (IOException e)
+   {
+    log().log(Level.FINE,
+      "Could not read the database locator from shared medium " + medium, e);
+    path = "";
+   }
+   finally
+   {
+    if (null != locStream)
+     try
+     {
+      locStream.close();
+     } catch (IOException thrown)
+     {
+      log().log(Level.FINE, "Error closing " + locFile, thrown);
+     }
+   }
   }
-  String path = getMpath().getPath();
   File location = new File(medium, path);
   if (!location.isDirectory())
-   return;
+   throw new IllegalArgumentException("Bag database location \""
+     + location + "\" is not a directory.");
   initDb(location);
   db.open();
  }
@@ -917,36 +926,40 @@ public class Launcher extends Logging
  protected void create() throws DBException
  {
   File medium = getMedium();
-  String path = getMpath().getPath();
+  File mpath = getMpath();
+  String path = null == mpath ? Manager.DB_NAMES[0] : mpath.getPath();
   if (!medium.exists() && medium.mkdir())
-  {
    log().info("Created directory \"" + medium + "\" to store the new bag.");
-  }
   File location = new File(medium, path);
   initDb(location);
   db.create();
-  Properties locator = new Properties();
-  locator.setProperty(DEFAULT_LOCATOR_PROPERTY, '@' + path);
   File locFile = new File(medium, LOCATOR_PROPERTIES_FILE);
-  OutputStream locStream = null;
-  try
+  if (!locFile.exists())
   {
-   locStream = new FileOutputStream(locFile);
-   locator.store(locStream, "data-bag storage locator");
-  } catch (IOException e)
-  {
-   log().log(Level.WARNING,
-     "Could not write the database locator to shared medium " + medium, e);
-  } finally
-  {
-   if (null != locStream)
-    try
-    {
-     locStream.close();
-    } catch (IOException thrown)
-    {
-     log().log(Level.FINE, "Error closing " + locFile, thrown);
-    }
+   Properties locator = new Properties();
+   locator.setProperty(DEFAULT_LOCATOR_PROPERTY, '@' + path);
+   OutputStream locStream = null;
+   try
+   {
+    locStream = new FileOutputStream(locFile);
+    locator.store(locStream, "data-bag storage locator");
+   }
+   catch (IOException e)
+   {
+    log().log(Level.WARNING,
+      "Could not write the database locator to shared medium " + medium, e);
+   }
+   finally
+   {
+    if (null != locStream)
+     try
+     {
+      locStream.close();
+     } catch (IOException thrown)
+     {
+      log().log(Level.FINE, "Error closing " + locFile, thrown);
+     }
+   }
   }
  }
 
@@ -2002,7 +2015,7 @@ public class Launcher extends Logging
 
  private CommandLine options;
 
- private File medium, mpath;
+ private File medium;
 
  private Manager db;
 
