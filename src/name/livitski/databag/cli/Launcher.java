@@ -920,7 +920,18 @@ public class Launcher extends Logging
    throw new IllegalArgumentException("Bag database location \""
      + location + "\" is not a directory.");
   initDb(location);
-  db.open();
+  try
+  {
+   db.open();
+  }
+  catch (DBException failure)
+  {
+   Throwable cause = failure.getCause();
+   if (null == cause)
+    cause = failure;
+   log().log(Level.FINE, failure.getMessage(), cause);
+   db = null;
+  }
  }
 
  protected void create() throws DBException
