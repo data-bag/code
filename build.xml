@@ -27,10 +27,14 @@
 	<property name="dest.jar.path" location="${basedir}/${dest.jar.rel}" />
 	<property name="javadoc.dir.rel" value="javadoc" />
 	<property name="javadoc.dir" location="${basedir}/${javadoc.dir.rel}" />
+	<property name="distfiles.dir.rel" value="distfiles" />
+	<property name="distfiles.dir" location="${basedir}/${distfiles.dir.rel}" />
 	<property name="classes.main" value="name.livitski.databag.cli.Launcher" />
 	<property name="git.gitignore.file" location="${basedir}/.gitignore" />
 	<property name="version" value="1.05" />
 	<property name="author" value="Konstantin Livitski" />
+	<property name="dist.rel" value="databag-${version}.zip" />
+	<property name="dist.path" location="${basedir}/${dist.rel}" />
 	<tstamp>
 		<format property="version.time" pattern="yyMMdd" />
 	</tstamp>
@@ -76,7 +80,7 @@
     <target name="compile" description="Compiles the project's classes">
     	<delete dir="${build.dir}" quiet="true" />
     	<mkdir dir="${build.dir}" />
-    	<javac destdir="${build.dir}" debug="true" source="1.5" target="1.5">
+    	<javac destdir="${build.dir}" debug="true" debuglevel="lines,source" source="1.5" target="1.5">
     		<compilerarg line="-Xlint:unchecked" />
     		<classpath refid="libs" />
 			<src path="${source.dir}" />
@@ -98,6 +102,7 @@
     	<echo file="${git.gitignore.file}" append="true" message="/${build.dir.rel}">
 </echo>	<echo file="${git.gitignore.file}" append="true" message="/${javadoc.dir.rel}">
 </echo>	<echo file="${git.gitignore.file}" append="true" message="/*.jar">
+</echo>	<echo file="${git.gitignore.file}" append="true" message="/*.zip">
 </echo>	
 	</target>
 
@@ -112,5 +117,44 @@
         	source="1.5" sourcepath="${source.dir}" splitindex="true" use="true" version="true">
             <link href="http://docs.oracle.com/javase/6/docs/api/"/>
         </javadoc>
+    </target>
+
+	<target name="dist" description="Builds a binary distribution" depends="jar"> 
+		<tempfile property="dist.md.tmp.path" destdir="${java.io.tmpdir}" prefix="dbagmd" />
+		<mkdir dir="${dist.md.tmp.path}" />
+		<copy todir="${dist.md.tmp.path}">
+			<fileset dir="${distfiles.dir}" includes="**/*.md" />
+			<fileset dir="${basedir}">
+				<include name="NOTICE.md" />
+				<include name="LICENSE/**/*.md" />
+				<include name="docs/manual.md" />
+			</fileset>
+		</copy>
+		<replace dir="${dist.md.tmp.path}" token=".md" value=".html" encoding="UTF-8">
+			<exclude name="docs/manual.md" />
+		</replace>
+		<tempfile property="dist.tmp.path" destdir="${java.io.tmpdir}" prefix="dbagdist" />
+		<mkdir dir="${dist.tmp.path}" />
+		<pathconvert property="dist.md.files" pathsep=" ">
+			<map from="${dist.md.tmp.path}/" to="" />
+			<fileset dir="${dist.md.tmp.path}" />
+		</pathconvert>
+		<java jar="${lib.dir}/txtmark.jar" fork="true" failonerror="true" dir="${dist.md.tmp.path}">
+			<arg value="${dist.tmp.path}" />
+			<arg line="${dist.md.files}" />
+		</java>
+		<delete dir="${dist.md.tmp.path}" />
+		<copy todir="${dist.tmp.path}">
+			<fileset file="${dest.jar.path}" />
+			<fileset dir="${distfiles.dir}" excludes="**/*.md" />
+		</copy>
+		<mkdir dir="${dist.tmp.path}/LICENSE" />
+		<copy todir="${dist.tmp.path}/LICENSE">
+			<fileset dir="${basedir}/LICENSE">
+				<exclude name="**/*.md" />
+			</fileset>
+		</copy>
+		<zip destfile="${dist.path}" basedir="${dist.tmp.path}" compress="false" />
+		<delete dir="${dist.tmp.path}" />
     </target>
 </project>

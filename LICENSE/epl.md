@@ -1,4 +1,4 @@
-﻿
+
 Eclipse Public License - Version 1.0
 ====================================
 

@@ -8,12 +8,10 @@ Please read file [`NOTICE.md`][NOTICE] or browse
 
 * * *
 
-_This manual is a work in progress. Please refer to the project's
-[`README.md`][README] file for instructions on building the data-bag
-executable. You can obtain the summary and descriptions of all command-line
-options by running data-bag without arguments._ 
+_This manual is a work in progress. You can obtain the summary and descriptions
+of all command-line options by running data-bag without arguments._ 
 
-_Last modified: February, 3 2013_
+_Last modified: February, 6 2013_
 
 * * *
 
