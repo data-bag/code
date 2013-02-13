@@ -18,6 +18,7 @@
     <http://www.livitski.name/contact>. 
      ====================================================================== -->
 <project name="Data-bag" default="jar">
+	<property name="version" value="1.05" />
 	<property name="source.dir" location="${basedir}/src" />
 	<property name="test.dir" location="${basedir}/test" />
 	<property name="lib.dir" location="${basedir}/lib" />
@@ -31,7 +32,6 @@
 	<property name="distfiles.dir" location="${basedir}/${distfiles.dir.rel}" />
 	<property name="classes.main" value="name.livitski.databag.cli.Launcher" />
 	<property name="git.gitignore.file" location="${basedir}/.gitignore" />
-	<property name="version" value="1.05" />
 	<property name="author" value="Konstantin Livitski" />
 	<property name="dist.rel" value="databag-${version}.zip" />
 	<property name="dist.path" location="${basedir}/${dist.rel}" />
@@ -40,15 +40,12 @@
 	</tstamp>
 
 	<path id="libs.bundle">
-		<fileset dir="${lib.dir}">
-			<include name="*.jar" />
-			<exclude name="junit*.jar" />
-		</fileset>
+		<fileset dir="${lib.dir}" includes="*.jar" />
 	</path>
 
-	<path id="libs">
+	<path id="libs.test">
 		<path refid="libs.bundle" />
-		<pathelement location="${lib.dir}/junit.jar" />
+		<pathelement location="${lib.dir}/testing/*.jar" />
 	</path>
 
     <target name="jar" depends="compile" description="Builds JAR file for the project">
@@ -82,7 +79,7 @@
     	<mkdir dir="${build.dir}" />
     	<javac destdir="${build.dir}" debug="true" debuglevel="lines,source" source="1.5" target="1.5">
     		<compilerarg line="-Xlint:unchecked" />
-    		<classpath refid="libs" />
+    		<classpath refid="libs.test" />
 			<src path="${source.dir}" />
 			<!-- src path="${test.dir}" / -->
     	</javac>
@@ -109,7 +106,7 @@
     <target name="javadoc" description="Generates Javadoc from the project's sources">
     	<delete dir="${javadoc.dir}" quiet="true" />
     	<mkdir dir="${javadoc.dir}" />
-        <javadoc access="protected" author="true" classpathref="libs"
+        <javadoc access="protected" author="true" classpathref="libs.test"
         	destdir="${javadoc.dir}" doctitle="${ant.project.name} Project"
         	nodeprecated="false" nodeprecatedlist="false"
         	noindex="false" nonavbar="false" notree="false"
@@ -139,7 +136,7 @@
 			<map from="${dist.md.tmp.path}/" to="" />
 			<fileset dir="${dist.md.tmp.path}" />
 		</pathconvert>
-		<java jar="${lib.dir}/txtmark.jar" fork="true" failonerror="true" dir="${dist.md.tmp.path}">
+		<java jar="${lib.dir}/building/txtmark.jar" fork="true" failonerror="true" dir="${dist.md.tmp.path}">
 			<arg value="${dist.tmp.path}" />
 			<arg line="${dist.md.files}" />
 		</java>

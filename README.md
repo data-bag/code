@@ -76,8 +76,8 @@ generate javadoc for the project, use ANT:
 Then, navigate to file `index.html` in the `javadoc` directory of your working
 tree to browse the _javadoc_.
 
-Contacting the project team
-===========================
+Contacting the project's team
+=============================
 
 You can send a message to the project's team via the
 [Contact page](http://www.livitski.name/contact) at <http://www.livitski.name/>
