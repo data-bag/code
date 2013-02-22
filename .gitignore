@@ -3,7 +3,7 @@
 
 /.*
 /*.build
-/build
+/libcache
 /javadoc
 /*.jar
 /*.zip

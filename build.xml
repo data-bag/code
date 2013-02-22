@@ -22,22 +22,20 @@
 	<property name="source.dir" location="${basedir}/src" />
 	<property name="test.dir" location="${basedir}/test" />
 	<property name="lib.dir" location="${basedir}/lib" />
-	<property name="build.dir.rel" value="build" />
-	<property name="build.dir" location="${basedir}/${build.dir.rel}" />
+	<property name="libcache.dir.rel" value="libcache" />
+	<property name="libcache.dir" location="${basedir}/${libcache.dir.rel}" />
 	<property name="dest.jar.rel" value="databag.jar" />
 	<property name="dest.jar.path" location="${basedir}/${dest.jar.rel}" />
 	<property name="javadoc.dir.rel" value="javadoc" />
 	<property name="javadoc.dir" location="${basedir}/${javadoc.dir.rel}" />
 	<property name="distfiles.dir.rel" value="distfiles" />
 	<property name="distfiles.dir" location="${basedir}/${distfiles.dir.rel}" />
+	<property name="docfiles.encoding" value="UTF-8" />
 	<property name="classes.main" value="name.livitski.databag.cli.Launcher" />
 	<property name="git.gitignore.file" location="${basedir}/.gitignore" />
 	<property name="author" value="Konstantin Livitski" />
 	<property name="dist.rel" value="databag-${version}.zip" />
 	<property name="dist.path" location="${basedir}/${dist.rel}" />
-	<tstamp>
-		<format property="version.time" pattern="yyMMdd" />
-	</tstamp>
 
 	<path id="libs.bundle">
 		<fileset dir="${lib.dir}" includes="*.jar" />
@@ -48,14 +46,56 @@
 		<pathelement location="${lib.dir}/testing/*.jar" />
 	</path>
 
-    <target name="jar" depends="compile" description="Builds JAR file for the project">
-    	<unjar dest="${build.dir}" overwrite= "false">
+	<path id="docfiles.md.common">
+		<fileset dir="${basedir}">
+			<include name="NOTICE.md" />
+			<include name="LICENSE/**/*.md" />
+			<include name="docs/manual.md" />
+		</fileset>
+	</path>
+
+	<path id="docfiles.md.dist">
+		<fileset dir="${distfiles.dir}" includes="**/*.md" />
+		<path refid="docfiles.md.common" />
+	</path>
+
+	<target name="-jar-check">
+		<uptodate property="build.uptodate" targetfile="${dest.jar.path}">
+			<srcfiles dir="${source.dir}" />
+		</uptodate>
+    </target>
+
+	<target name="-prepare-build" unless="build.uptodate">
+		<tstamp>
+			<format property="version.time" pattern="yyMMdd" />
+		</tstamp>
+		<tempfile property="build.dir" destdir="${java.io.tmpdir}" prefix="dbagbuild" />
+    	<mkdir dir="${build.dir}" />
+    </target>
+
+    <target name="-build" if="build.dir">
+    	<javac destdir="${build.dir}" debug="true" debuglevel="lines,source" source="1.5" target="1.5">
+    		<compilerarg line="-Xlint:unchecked" />
+    		<classpath refid="libs.test" />
+			<src path="${source.dir}" />
+			<!-- src path="${test.dir}" / -->
+    	</javac>
+    	<copy todir="${build.dir}" preservelastmodified="true">
+			<fileset dir="${source.dir}" includes="**/*.properties" />
+    	</copy>
+    </target>
+
+    <target name="jar" description="Builds JAR file for the project"
+    	depends="-jar-check,-prepare-build,-build" if="build.dir">
+    	<unjar dest="${libcache.dir}" overwrite="false">
     		<path refid="libs.bundle" />
     	    <patternset>
     	        <exclude name="META-INF/**"/>
     	    </patternset>
     	</unjar>
-    	<jar destfile="${dest.jar.path}" basedir="${build.dir}" update="false" duplicate="fail">
+    	<jar destfile="${dest.jar.path}" update="false" duplicate="fail">
+    		<fileset dir="${build.dir}" />
+    		<fileset dir="${libcache.dir}" />
     		<manifest>
     			<attribute name="Main-Class" value="${classes.main}"/>
     		    <section name="name/livitski/databag/">
@@ -72,21 +112,8 @@
     		    </section>
     		</manifest>
     	</jar>
-    </target>
-
-    <target name="compile" description="Compiles the project's classes">
     	<delete dir="${build.dir}" quiet="true" />
-    	<mkdir dir="${build.dir}" />
-    	<javac destdir="${build.dir}" debug="true" debuglevel="lines,source" source="1.5" target="1.5">
-    		<compilerarg line="-Xlint:unchecked" />
-    		<classpath refid="libs.test" />
-			<src path="${source.dir}" />
-			<!-- src path="${test.dir}" / -->
-    	</javac>
-    	<copy todir="${build.dir}">
-			<fileset dir="${source.dir}" includes="**/*.properties" />
-    	</copy>
-    </target>
+  </target>
 
     <target name="gitignore" description="Generates the .gitignore file">
     	<delete file="${git.gitignore.file}" />
@@ -96,7 +123,7 @@
 /.*
 /*.build
 </echo>
-    	<echo file="${git.gitignore.file}" append="true" message="/${build.dir.rel}">
+    	<echo file="${git.gitignore.file}" append="true" message="/${libcache.dir.rel}">
 </echo>	<echo file="${git.gitignore.file}" append="true" message="/${javadoc.dir.rel}">
 </echo>	<echo file="${git.gitignore.file}" append="true" message="/*.jar">
 </echo>	<echo file="${git.gitignore.file}" append="true" message="/*.zip">
@@ -116,18 +143,14 @@
         </javadoc>
     </target>
 
-	<target name="dist" description="Builds a binary distribution" depends="jar"> 
+	<target name="dist" description="Builds a binary distribution" depends="jar">
+		<!-- Convert .md files to .html in the distribution replacing .md with .html in internal links -->
 		<tempfile property="dist.md.tmp.path" destdir="${java.io.tmpdir}" prefix="dbagmd" />
 		<mkdir dir="${dist.md.tmp.path}" />
 		<copy todir="${dist.md.tmp.path}">
-			<fileset dir="${distfiles.dir}" includes="**/*.md" />
-			<fileset dir="${basedir}">
-				<include name="NOTICE.md" />
-				<include name="LICENSE/**/*.md" />
-				<include name="docs/manual.md" />
-			</fileset>
+			<path refid="docfiles.md.dist" />
 		</copy>
-		<replace dir="${dist.md.tmp.path}" token=".md" value=".html" encoding="UTF-8">
+		<replace dir="${dist.md.tmp.path}" token=".md" value=".html" encoding="${docfiles.encoding}">
 			<exclude name="docs/manual.md" />
 		</replace>
 		<tempfile property="dist.tmp.path" destdir="${java.io.tmpdir}" prefix="dbagdist" />
@@ -139,18 +162,43 @@
 		<java jar="${lib.dir}/building/txtmark.jar" fork="true" failonerror="true" dir="${dist.md.tmp.path}">
 			<arg value="${dist.tmp.path}" />
 			<arg line="${dist.md.files}" />
+			<sysproperty key="name.livitski.tools.txtmark.encoding" value="${docfiles.encoding}" />
 		</java>
 		<delete dir="${dist.md.tmp.path}" />
-		<copy todir="${dist.tmp.path}">
+		<!-- Add TOC to the converted manual  -->
+		<tempfile property="dist.manual.tmp.location" destdir="${dist.tmp.path}" prefix="manual" />
+		<move file="${dist.tmp.path}/docs/manual.html" tofile="${dist.manual.tmp.location}" />
+		<echo message="Adding TOC to the manual ..." />
+		<java classname="name.livitski.tools.html.toc.ProcessFile" fork="true"
+			output="${dist.tmp.path}/docs/manual.html" failonerror="true" logError="true">
+			<classpath>
+				<fileset dir="${lib.dir}/building" >
+					<include name="html-toc.jar" />
+					<include name="staxform.jar" />
+				</fileset>
+			</classpath>
+			<arg value="${dist.manual.tmp.location}" />
+			<sysproperty key="name.livitski.tools.html.toc.encoding" value="${docfiles.encoding}" />
+		</java>
+		<delete file="${dist.manual.tmp.location}" />
+		<!-- Apply original timestamps to the converted .md files -->
+		<touch>
+			<path refid="docfiles.md.dist" />
+			<!-- NOTE: source names in the mapper must be relative to a fileset -->
+			<mapper type="glob" from="*.md" to="${dist.tmp.path}/*.html" />
+		</touch>
+		<!-- Copy the binary, license and other materials to the staging directory -->
+		<copy todir="${dist.tmp.path}" preservelastmodified="true">
 			<fileset file="${dest.jar.path}" />
 			<fileset dir="${distfiles.dir}" excludes="**/*.md" />
 		</copy>
 		<mkdir dir="${dist.tmp.path}/LICENSE" />
-		<copy todir="${dist.tmp.path}/LICENSE">
+		<copy todir="${dist.tmp.path}/LICENSE" preservelastmodified="true">
 			<fileset dir="${basedir}/LICENSE">
 				<exclude name="**/*.md" />
 			</fileset>
 		</copy>
+		<!-- Package the results -->
 		<zip destfile="${dist.path}" basedir="${dist.tmp.path}" compress="false" />
 		<delete dir="${dist.tmp.path}" />
     </target>
