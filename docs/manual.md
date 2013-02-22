@@ -11,9 +11,15 @@ Please read file [`NOTICE.md`][NOTICE] or browse
 _This manual is a work in progress. You can obtain the summary and descriptions
 of all command-line options by running data-bag without arguments._ 
 
-_Last modified: February, 6 2013_
+_Last modified: February, 19 2013_
 
 * * *
+
+Contents
+--------
+<ul><?name.livitski.tools.html.toc version="1.0" outline="h2" ?>
+<small>Generated table of contents is placed here</small>
+<?name.livitski.tools.html.toc /?></ul>
 
 What is _data-bag_?
 -------------------
