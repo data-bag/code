@@ -289,7 +289,7 @@ past operations with that replica will be lost.**
 
 	$ java -jar /mnt/databag.jar -d /mnt/ -C /tmp/demo1 --drop replica
 
-<a id="filtering-files"> </a>
+<a name="filtering-files"> </a>
 
 Filtering files
 ---------------
@@ -459,7 +459,7 @@ the `--list` command can be typed using letters in any (or both) cases.
 
 _TODO: example of the --save option with a list command_
 
-<a id="version-tracking"> </a>
+<a name="version-tracking"> </a>
 
 Tracking versions of stored files
 ---------------------------------
@@ -511,7 +511,7 @@ numbers are unique within the file's history.
 
 _TODO: cover the common arguments and options of the `--history` command_
 
-<a id="conflict-resolution"> </a>
+<a name="conflict-resolution"> </a>
  
 Resolving conflicts among replicas
 ----------------------------------
@@ -576,7 +576,7 @@ it with caution.</strong>
 _TODO: describe the granularity of actions and the use of filters and
 patterns to address that_
 
-<a id="deleted-files"> </a>
+<a name="deleted-files"> </a>
 
 Deleted files
 -------------
@@ -610,9 +610,9 @@ treats such event as two operations:
 In other words, continuity of the file's [history][] is not preserved. There
 are plans to implement detection of file renames and moves in future, even
 though often such detection cannot be done reliably without user's
-intervention.  
+intervention.
 
-<a id="restoring-files"> </a>
+<a name="restoring-files"> </a>
 
 Restoring old versions and deleted files
 ----------------------------------------
@@ -730,7 +730,7 @@ your user account.
 If any of the restored files have to be written to a location within the
 current replica, e.g. by following a symbolic link, the operation will fail.
 
-<a id="undoing-changes"> </a>
+<a name="undoing-changes"> </a>
 
 Rolling back changes to files
 -----------------------------
@@ -739,7 +739,7 @@ _TODO: describe the undo operation_
 
 _TODO: explain how undo deletes and un-deletes files_
 
-<a id="purge-command"> </a>
+<a name="purge-command"> </a>
 
 Purging old versions from shared storage
 ----------------------------------------
