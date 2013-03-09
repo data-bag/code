@@ -1,7 +1,7 @@
-About this repository
-=====================
+About this archive
+==================
 
-This repository contains the binary distribution of the *__Data-bag__ file
+This archive contains the binary distribution of the *__Data-bag__ file
 synchronization tool*. Its top-level components are:
 
 		databag.jar    The data-bag executable.

@@ -10,7 +10,7 @@ Please read file [`NOTICE.md`][NOTICE] or browse
 
 _This manual is a work in progress._ 
 
-_Last modified: March, 5 2013_
+_Last modified: March, 8 2013_
 
 * * *
 
@@ -908,7 +908,7 @@ on the date you enter. Note that [`--purge`][--purge] erases the log
 entries beyond the [epoch][].
 
 <h4 id="switch-purge">--purge</h4><a name="switch-purge"> </a>
-__Syntax:__ `--purge` [ *epoch* ]
+__Syntax:__ `--purge` *epoch*
 
 [Purges](#purging-bags) the [versions][] of files in the [bag][]
 modified before the beginning of an [epoch][]. The *epoch* argument
@@ -1029,7 +1029,7 @@ considered distinct. Measured in milliseconds. The default
 is 3 seconds minus one millisecond.
 
 <h4 id="switch-local">-C, --local</h4><a name="switch-local"> </a>
-__Syntax:__ `--local` [ *path* ]
+__Syntax:__ `--local` *path*
 
 Sets the root path of the [replica][] to work with. A user may create
 multiple [replicas][] of the same bag and synchronize them one at a
@@ -1039,10 +1039,12 @@ for your user account.
 <h4 id="switch-cds">--cds</h4><a name="switch-cds"> </a>
 __Syntax:__ `--cds` *percentage*
 
-Specifies the maximum size of a structure describing differences
-between versions of any file that _data-bag_ is allowed to keep in
-memory. The boundary is set as a percentage or a fraction of the
-JVM's maximum heap size. Default value of this parameter is 10%.
+Adjusts the program's memory utilization allowance. The less memory
+_data-bag_ is allowed to use, the more disk space it will need to
+store files. This parameter limits the size of a structure describing
+differences between versions of any file that _data-bag_ is allowed
+to keep in memory. The boundary is set as a percentage or a fraction
+of the JVM's maximum heap size. Default value of this parameter is 10%.
 
 <h4 id="switch-compress">--compress</h4><a name="switch-compress"> </a>
 __Syntax:__ `--compress` *mode*
@@ -1061,7 +1063,7 @@ to choose the new bag's location. To have the bag encrypted, add the
 [`--encrypt` option][--encrypt].
 
 <h4 id="switch-medium">-d, --medium</h4><a name="switch-medium"> </a>
-__Syntax:__ `--medium` [ *root [path]* ]
+__Syntax:__ `--medium` *root [path]*
 
 Points to a medium or directory containing the [bag][]. The default is
 current directory. Optional *path* argument points to a
@@ -1070,12 +1072,14 @@ subdirectory on the selected medium if it stores multiple bags.
 <h4 id="switch-dcs">--dcs</h4><a name="switch-dcs"> </a>
 __Syntax:__ `--dcs` *percentage*
 
-Specifies the maximum total size of all incremental differences between
+Limits the amount of data that _data-bag_ will have to read when it restores a
+file. A lower limit reduces the time it will take to synchronize and retore
+files at the expense of additional storage space used by the [bag][].
+The parameter is the maximum total size of all incremental differences between
 the complete image of a file and any new [version][] stored in the [bag][].
 Once _data-bag_ exceeds that limit, it stores the new version of a file in its
-entirety. That reduces the time it may take to restore the file. The
-boundary is set as a percentage or a fraction of the file's size. Default
-value of this parameter is 50%.
+entirety. The boundary is set as a percentage or a fraction of the file's size.
+The default value of this parameter is 50%.
 
 <h4 id="switch-encrypt">-E, --encrypt</h4><a name="switch-encrypt"> </a>
 __Syntax:__ `--encrypt` [ *key-source* ... ] [ `--cipher AES` | `--cipher XTEA` ]
@@ -1112,7 +1116,7 @@ algorithm. Supported algorithms are `AES` and `XTEA`. The
 default cipher is `AES`.
 
 <h4 id="switch-filter">-F, --filter</h4><a name="switch-filter"> </a>
-__Syntax:__ `--filter` [ *name* ] [ `--default` | `--invert` ]
+__Syntax:__ `--filter` *name* [ `--default` | `--invert` ]
 
 Selects a [filter][] to apply to the set of files before
 performing the requested command. Files that satisfy the
@@ -1151,11 +1155,12 @@ created by running [`--list filter`][--list] command with the
 <h4 id="switch-lob-size">--lob-size</h4><a name="switch-lob-size"> </a>
 __Syntax:__ `--lob-size` *bytes*
 
-Changes the size threshold for file images and [version][] differences that
-triggers their storage as separate files on the medium containing
-the [bag][]. The default is 3500 bytes. This setting is stored in the bag
-and affects future invocations. It does not change the storage
-strategy for existing data in the bag.
+Adjusts the storage policy that _data-bag_ applies to its binary data. 
+The parameter is the maximum size of a binary object, such as contents of
+a file, that triggers its storage in a separate file on the medium containing
+the [bag][]. Smaller objects are stored in the bag's main file. The default
+threshold is 3500 bytes. This setting is stored in the bag and affects future
+invocations. It does not change the storage strategy for existing data in the bag.
 
 <h4 id="switch-nosync">-N, --nosync</h4><a name="switch-nosync"> </a>
 __Syntax:__ `--nosync`
@@ -1168,8 +1173,8 @@ synchronizing.
 <h4 id="switch-nobanner">--nobanner</h4><a name="switch-nobanner"> </a>
 __Syntax:__ `--nobanner`
 
-Instructs _data-bag_ to omit the header from its output (for batch
-processing).
+Instructs _data-bag_ to omit the header from its output. This option
+simplifies the output parsing when running _data-bag_ from a script. 
 
 <h4 id="switch-save">-o, --save</h4><a name="switch-save"> </a>
 __Syntax:__ `--save` *file*
@@ -1238,9 +1243,9 @@ shared medium.</dd>
 <dd>a group of <em>data-bag</em> arguments that begins with a certain literal
 string or a shorthand string. The strings that begin <em>data-bag</em>'s
 commands on a command line, including shorthands, are listed in the
-[commands reference](#commands-reference). Unlike <a href="#option">options</a>,
-commands are mutually exclusive, i.e. you cannot enter more than one command on
-a command line.</dd>
+<a href="#commands-reference">commands reference</a>. Unlike
+<a href="#option">options</a>, commands are mutually exclusive, i.e. you
+cannot enter more than one command on a command line.</dd>
 
 <dt id="term-conflict"><a name="term-conflict"> </a>Conflict of versions</dt>
 <dd>a situation of ambiguity when <em>data-bag</em> operating on a
@@ -1288,8 +1293,8 @@ and allows to match files across directory levels.</dd>
 <dd>a group of <em>data-bag</em> arguments that begins with a certain literal
 string or a shorthand string. The strings that begin <em>data-bag</em>'s
 options on a command line, including shorthands, are listed in the
-[options reference](#options-reference). Options can be combined on a command
-line with <a href="#commands">commands</a> and other options.</dd>
+<a href="#options-reference">options reference</a>. Options can be combined on
+a command line with <a href="#commands">commands</a> and other options.</dd>
 
 <dt id="term-replica"><a name="term-replica"> </a>Replica</dt>
 <dd>a directory containing local copies of files tracked and synchronized with
