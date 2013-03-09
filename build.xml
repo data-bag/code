@@ -95,6 +95,12 @@
     	<copy todir="${build.dir}" preservelastmodified="true">
 			<fileset dir="${source.dir}" includes="**/*.properties" />
     	</copy>
+    	<java classname="name.livitski.databag.cli.Syntax" fork="false" failonerror="true">
+    		<classpath>
+    			<pathelement location="${build.dir}" />
+        		<path refid="libs.test" />
+    		</classpath>
+    	</java>
     </target>
 
     <target name="jar" description="Builds JAR file for the project"
