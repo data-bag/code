@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -40,13 +39,6 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
-import org.apache.commons.cli.OptionGroup;
-import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import name.livitski.databag.app.Configuration;
@@ -72,7 +64,9 @@ import name.livitski.databag.db.Manager;
 import name.livitski.databag.db.SingletonCursor;
 import name.livitski.databag.db.schema.SyncLogDTO;
 import name.livitski.tools.Logging;
+
 import static name.livitski.databag.app.Configuration.*;
+import static name.livitski.databag.cli.Syntax.*;
 
 /**
  * Implements command-line interface of the application.
@@ -90,29 +84,30 @@ public class Launcher extends Logging
   try
   {
    logging.readConfiguration(cfg);
-  } catch (Exception e)
+  }
+  catch (Exception e)
   {
-   System.err
-     .println("WARNING: could not initialize logging. Detailed diagnostics may not be available. "
-       + e.getMessage());
-  } finally
+   System.err.println(
+     "WARNING: could not initialize logging. Detailed diagnostics may not be available. "
+     + e.getMessage());
+  }
+  finally
   {
    try
    {
     cfg.close();
     cfg = null;
-   } catch (Exception ignored)
-   {
    }
+   catch (Exception ignored) {}
   }
   try
   {
-   CommandLineParser parser = new GnuParser();
-   tool.setOptions(parser.parse(OPTIONS, args));
-  } catch (ParseException e)
+   tool.setOptions(SYNTAX.parseCommandLine(args));
+  }
+  catch (ParseException e)
   {
    tool.log().severe(e.getMessage());
-   usage(System.out);
+   showHelpHint();
   }
   if (null != tool.getOptions())
    tool.run();
@@ -122,15 +117,16 @@ public class Launcher extends Logging
  {
   String typeString = optionValue(DROP_COMMAND);
   if (null == typeString)
-   throw new IllegalArgumentException("--" + DROP_COMMAND
-     + " command requires an item type argument");
+   throw new IllegalArgumentException(
+     "--" + DROP_COMMAND + " command requires an item type argument");
   try
   {
    return DropType.valueOf(typeString.toUpperCase());
-  } catch (IllegalArgumentException badType)
+  }
+  catch (IllegalArgumentException badType)
   {
-   throw new IllegalArgumentException("Invalid type of a record to drop: "
-     + typeString, badType);
+   throw new IllegalArgumentException(
+     "Invalid type of a record to drop: " + typeString, badType);
   }
  }
 
@@ -143,10 +139,11 @@ public class Launcher extends Logging
    try
    {
     return ListType.valueOf(value.toUpperCase());
-   } catch (IllegalArgumentException badType)
+   }
+   catch (IllegalArgumentException badType)
    {
-    throw new IllegalArgumentException("Invalid type of a record to list: "
-      + value, badType);
+    throw new IllegalArgumentException(
+      "Invalid type of a record to list: " + value, badType);
    }
  }
 
@@ -191,7 +188,12 @@ public class Launcher extends Logging
  public File getLocal() throws IOException
  {
   String value = optionValue(LOCAL_OPTION);
-  return null == value ? null : new File(value).getCanonicalFile();
+  if (!hasOption(LOCAL_OPTION))
+   return null;
+  else if (null == value)
+   throw new IllegalArgumentException(RESOURCES.getMessage(Launcher.class, "REPLICA_PATH_REQUIRED"));
+  else
+   return new File(value).getCanonicalFile();
  }
 
  public boolean isLocalBecomingDefault()
@@ -281,7 +283,7 @@ public class Launcher extends Logging
    mpath = new File(options.getOptionValues(MEDIUM_OPTION)[1]);
    if (mpath.isAbsolute())
     throw new IllegalArgumentException(
-      "Path to the database on shared medium " + getMedium()
+      "Path to the bag on medium " + getMedium()
       + " must be relative, got: " + mpath);
   }
   return mpath;
@@ -416,7 +418,7 @@ public class Launcher extends Logging
    log().finer("Verbosity level " + requestedLogLevel);
    if (hasOption(HELP_COMMAND))
    {
-    usage(getOutputStream());
+    SYNTAX.usage(getOutputStream());
     return;
    }
    try
@@ -431,8 +433,8 @@ public class Launcher extends Logging
     // no database - print usage
     if (null == db)
     {
-     log().warning("Shared storage not found on " + getMedium());
-     usage(System.out);
+     log().warning("Could not find a bag on \"" + getMedium() + "\", giving up.");
+     showHelpHint();
      return;
     }
     if (hasOption(SCHEMA_EVOLUTION_OPTION))
@@ -469,7 +471,7 @@ public class Launcher extends Logging
      // no local copy - print warning
      else
       log().warning(
-        "Local replica of shared storage " + getMedium() + " not found for "
+        "Local replica of bag " + getMedium() + " not found for "
  	 + user + '@' + host);
     }
     // drop request
@@ -702,6 +704,14 @@ public class Launcher extends Logging
 
  public static final String DEFAULT_LOCATOR_PROPERTY = "database.default";
 
+ protected static void showHelpHint()
+ {
+  System.err.printf(
+    RESOURCES.getMessage(Launcher.class, "HELP_HINT"),
+    HELP_COMMAND
+  );
+ }
+
  protected void dropReplica(ReplicaInfo replica) throws DBException
  {
   if (hasFilterOption())
@@ -900,7 +910,7 @@ public class Launcher extends Logging
    catch (IOException e)
    {
     log().log(Level.FINE,
-      "Could not read the database locator from shared medium " + medium, e);
+      "Could not read the database locator from medium " + medium, e);
     path = "";
    }
    finally
@@ -958,7 +968,7 @@ public class Launcher extends Logging
    catch (IOException e)
    {
     log().log(Level.WARNING,
-      "Could not write the database locator to shared medium " + medium, e);
+      "Could not write the database locator to medium " + medium, e);
    }
    finally
    {
@@ -994,7 +1004,7 @@ public class Launcher extends Logging
    }
    catch (Exception e)
    {
-    log().log(Level.WARNING, "Close failed for shared storage cleaner", e);
+    log().log(Level.WARNING, "Close failed for bag cleaner", e);
    }
   }
  }
@@ -1287,17 +1297,6 @@ public class Launcher extends Logging
      name);
  }
 
- protected static void usage(PrintStream out)
- {
-  HelpFormatter formatter = new HelpFormatter();
-  formatter.setSyntaxPrefix("Usage:\n");
-  PrintWriter pw = new PrintWriter(out, true);
-  formatter.printHelp(pw,
-    HelpFormatter.DEFAULT_WIDTH, SYNTAX, HEADER, OPTIONS,
-    HelpFormatter.DEFAULT_LEFT_PAD, HelpFormatter.DEFAULT_DESC_PAD, "");
-  pw.close();
- }
-
  protected static void banner()
  {
   for (String msg : BANNER)
@@ -1416,98 +1415,21 @@ public class Launcher extends Logging
 
  private static final String USER_DIR_PROPERTY = "user.dir";
 
- private static final String[] BANNER = {
-   "Data-bag: file synchronization, backup, and change tracking tool, v."
-     + Launcher.class.getPackage().getImplementationVersion(),
-   "Copyright 2010-13 Konstantin Livitski and others.",
-   "See file \"LICENSE/data-bag.md\" for applicable terms,",
-   " http://data-bag.org to learn more about the project.",
-   "" };
+ private static final Resources RESOURCES = new Resources();
 
- private static final String SYNTAX = "java -jar databag.jar [options] command [arguments]";
+ private static final Syntax SYNTAX = new Syntax().withResources(RESOURCES);
 
- private static final String HEADER = "\n\nCommon options:"
-   + "\n [-d medium] [--create] [-C path [--default]] [-A action]"
-   + "\n [--fn file-id] [--vn version-id] [-o output-file] [-N]"
-   + "\n  [-F filter-name [--default | --invert]] [-v] [database-options]"
-   + "\nCommand: -? | -l | -h | -r | --drop | --log | --purge | [-s]";
-
- private static final String HELP_COMMAND = "help"; // -?
-
- private static final String DROP_COMMAND = "drop";
-
- private static final String LIST_COMMAND = "list"; // -l
-
- private static final String HISTORY_COMMAND = "history"; // -h
-
- private static final String LOG_COMMAND = "log";
-
- private static final String PURGE_COMMAND = "purge";
-
- static final String RESTORE_COMMAND = "restore"; // -r
-
- static final String UNDO_COMMAND = "undo"; // -u
-
- static final String SYNC_COMMAND = "sync"; // -s
-
- static final String NOSYNC_OPTION = "nosync"; // -N
-
- private static final String CREATE_OPTION = "create";
-
- private static final String ENCRYPT_OPTION = "encrypt"; // -E
-
- private static final String NOBANNER_OPTION = "nobanner";
-
- private static final String LOCAL_OPTION = "local"; // -C
-
- // an argument to ENCRYPT_OPTION
- private static final String CIPHER_OPTION = "--cipher";
-
- // an argument to LOCAL_OPTION
- private static final String DEFAULT_OPTION = "--default";
-
- // an argument to FILTER_OPTION
- private static final String INVERT_OPTION = "--invert";
-
- // an argument to DROP FILTER command
- private static final String FORCE_OPTION = "--force";
-
- private static final String COMPRESSION_OPTION = "compress";
-
- private static final String LOB_SIZE_OPTION = "lob-size";
-
- private static final String MEDIUM_OPTION = "medium"; // -d
-
- static final String FILE_ID_OPTION = "fn";
-
- static final String VERSION_ID_OPTION = "vn";
-
- static final String AS_OF_OPTION = "as-of"; // -a
-
- private static final String FILTER_OPTION = "filter"; // -F
-
- static final String SAVE_OPTION = "save"; // -o
-
- private static final String LOAD_OPTION = "load";
-
- private static final String SET_OPTION = "set";
-
- private static final String DEFAULT_ACTION_OPTION = "default-action"; // -A
-
- private static final String VERBOSE_OPTION = "verbose"; // -v
-
- private static final String ALLOWED_TIMESTAMP_DISCREPANCY_OPTION = "allow-time-diff";
-
- private static final String CUMULATIVE_DELTA_SIZE_OPTION = "cds";
-
- private static final String DELTA_CHAIN_SIZE_OPTION = "dcs";
-
- private static final String SCHEMA_EVOLUTION_OPTION = "upgrade-db";
-
- // TODO: move these to the proper location
- public static final String ALL_FILTER = "all";
-
- public static final String DEFAULT_FILTER = "default";
+ private static final String[] BANNER;
+ static {
+  final Class<Launcher> clazz = Launcher.class;
+  BANNER = new String[] {
+    RESOURCES.getMessage(clazz, "BANNER_0") + clazz.getPackage().getImplementationVersion(),
+    RESOURCES.getMessage(clazz, "BANNER_1"),
+    RESOURCES.getMessage(clazz, "BANNER_2"),
+    RESOURCES.getMessage(clazz, "BANNER_3"),
+    ""
+  };
+ }
 
  enum ListType
  {
@@ -1523,433 +1445,6 @@ public class Launcher extends Logging
  {
   KEY, ASK, STDIN
  };
-
- @SuppressWarnings("static-access")
- private static final OptionGroup COMMAND_OPTION_GROUP = new OptionGroup()
-
-   .addOption(
-     OptionBuilder.withLongOpt(PURGE_COMMAND).hasOptionalArgs(2).withArgName(
-       "epoch").withDescription(
-       "Purges the file versions modified before the beginning of epoch."
-	 + " The epoch argument is yyyy-mm-dd followed by an optional"
-	 + " hh:mm:ss[.f...] part. The optional part is a separate argument"
-	 + " on the command line. In other words, you must not escape"
-	 + " the white space between the parts of the epoch argument."
-	 + " This command also purges the log of operations with the medium"
-	 + " prior to the epoch.")
-	.create())
-
-   .addOption(
-     OptionBuilder
-       .withLongOpt(DROP_COMMAND)
-       .hasOptionalArgs()
-       .withArgName("type")
-       .withDescription(
-	 "Removes a record from the shared storage. The {type} argument communicates the"
-	   + " type of record to be removed. Supported types are "
-	   + DropType.REPLICA
-	   + " and "
-	   + DropType.FILTER
-	   + ". "
-	   + DropType.REPLICA
-	   + " type can be used in conjunction with --"
-	   + LOCAL_OPTION
-	   + " {path} to designate a replica to drop, otherwise it removes the"
-	   + " current user's default repica. "
-	   + DropType.FILTER
-	   + " type requires a --"
-	   + FILTER_OPTION
-	   + " option that tells data-bag what filter to drop. Built-in filter \""
-	   + FilterFactory.ALL_FILTER
-	   + "\" cannot be dropped. If there are replicas that use"
-	   + " the filter being dropped as their default filter, the command will fail"
-	   + " unless followed by the " + FORCE_OPTION + " option.").create())
-
-   .addOption(
-     OptionBuilder.withLongOpt(LIST_COMMAND).hasOptionalArg().withArgName(
-       "type").withDescription(
-       "Lists items in the shared storage. The case-insensitive"
-	 + " argument designates"
-	 + " the type of items that should be listed. It can take values"
-	 + " [" + ListType.FILES + " | " + ListType.REPLICAS + " | "
-	 + ListType.FILTER + " | " + ListType.FILTERS + "]. The"
-	 + " default is " + ListType.FILES + '.').create('l'))
-
-   .addOption(
-     OptionBuilder
-       .withLongOpt(HISTORY_COMMAND)
-       .hasOptionalArg()
-       .withArgName("shared-file")
-       .withDescription(
-	 "Lists all versions of a file."
-	   + " When a file name is specified, all deleted files with the same name"
-	   + " are listed as well.")
-       .create('h'))
-
-   .addOption(
-     OptionBuilder
-     .withLongOpt(RESTORE_COMMAND)
-     .hasOptionalArg()
-     .withArgName("shared-file-or-pattern")
-     .withDescription(
-       "Restores file(s) from the shared medium. The argument following this command must either be"
-         + " the name of a shared file to restore, or a pattern used to find shared files."
-	 + " Single-file lookup by name will only succeed if there was just one file"
-	 + " having that name, i.e. there were no histories of deleted or renamed files with the"
-	 + " same name on the shared medium. Alternatively, you can specify a shared file number"
-	 + " using the --" + FILE_ID_OPTION + " option. To restore a historic version of a file,"
-	 + " enter the --" + VERSION_ID_OPTION + " option with a version number"
-	 + " or the --" + AS_OF_OPTION + " option with a date. To restore the file"
-	 + " to a different location or under a different name than its current replica, use the --"
-	 + SAVE_OPTION + " option to enter the intended destination. If the destination is"
-	 + " a descendant of the local replica directory, the restored file will be automatically"
-	 + " added to the shared storage."
-	 + " When restoring multiple files, the argument to --" + SAVE_OPTION + " option should"
-	 + " point to an empty directory that is neither the local replica's directory nor any"
-	 + " of its descendants. Multiple-file restore to a target directory will fail if any"
-	 + " of the restored files have to be written to a location within the current replica."
-	 + " If you don't enter a target directory on the command line,"
-	 + " files that match the pattern and the current filter are restored to their locations"
-	 + " in the current replica. The replica may become ouf-of-sync with shared"
-	 + " storage if restored versions are not the current ones. When restoring files matching"
-	 + " a pattern, you cannot enter --" + FILE_ID_OPTION + " or --" + VERSION_ID_OPTION
-	 + " options. To obtain historic versions of files, use the --" + AS_OF_OPTION
-	 + " option with a date of interest. Without that option, the files will be restored"
-	 + " to their current versions at the time you run this command.")
-     .create('r'))
-
-   .addOption(
-     OptionBuilder
-     .withLongOpt(UNDO_COMMAND)
-     .hasOptionalArg()
-     .withArgName("shared-file-or-pattern")
-     .withDescription(
-       "Reverts file(s) on the shared medium to a historic state. This command retains"
-         + " the undone changes to shared files as branches of those files' version trees."
-         + " The argument following this command must either be"
-         + " the name of a shared file to revert, or a pattern used to find shared files."
-	 + " Single-file lookup by name will only succeed if there was just one file"
-	 + " having that name, i.e. there were no histories of deleted or renamed files with the"
-	 + " same name on the shared medium. Alternatively, you can specify the shared file number"
-	 + " using the --" + FILE_ID_OPTION + " option. To return to the file's version with a certain"
-	 + " number, enter the --" + VERSION_ID_OPTION + " option with that number. To return to the"
-	 + " file contents as of a specific date, enter the --" + AS_OF_OPTION + " option with that"
-	 + " date. When reverting files matching a pattern, you can only use the --" + AS_OF_OPTION
-	 + " option to select the files' versions. Without that option, the files will be reverted"
-	 + " to the current date. Such operation shall have no effect on shared files unless they"
-	 + " have future-dated versions. By default, --" + UNDO_COMMAND + " will synchronize the file(s)"
-	 + " matching the name or pattern (and the effective filter), or the numbered file regardless"
-	 + " of the filter, with the current replica, if any. Use --" + NOSYNC_OPTION + " to skip the"
-	 + " current replica synchronization.")
-     .create('u'))
-
-   .addOption(
-     OptionBuilder
-     .withLongOpt(SYNC_COMMAND)
-     .hasOptionalArg()
-     .withArgName("file-name-pattern")
-     .withDescription(
-       "Synchronizes file(s) on the shared medium with the current replica. This command runs"
-         + " by default if you have selected the shared medium with --" + MEDIUM_OPTION
-         + ", informed data-bag about the current replica, either using --" + LOCAL_OPTION
-         + " or by designating the default replica, and did not enter any other command on"
-         + " the command line. When you enter this command explicitly, you may append it "
-         + " with a pattern argument to limit the operation to a subset of files within"
-         + " the replica. You can also synchronize one specific shared file by entering its"
-	 + " number after the --" + FILE_ID_OPTION + " option. This works regardless of whether --"
-	 + SYNC_COMMAND + " is explicitly entered on the command line. Note that you cannot enter --"
-	 + NOSYNC_OPTION + " with this command.")
-     .create('s'))
-
-   .addOption(
-     OptionBuilder.withLongOpt(LOG_COMMAND).hasOptionalArgs(2).withArgName(
-       "time-frame").withDescription(
-	 "Displays the log of operations that might have changed contents of the bag."
-	 + " Optional [time-frame] arguments formatted as yyyy-mm-dd[ hh:mm:ss[.f...]]"
-	 + " specify the beginning (inclusive) and the end (exclusive) of the"
-	 + " log fragment to print. If only one argument is present, it is treated"
-	 + " as the beginning of the time frame and infinity is assumed to be the end."
-	 + " Note that the white space between the date and time parts of each argument"
-	 + " must be part of that argument. In other words, you have to escape or quote"
-	 + " that white space. The time part of each argument is optional."
-	 + " Note that --" + PURGE_COMMAND + " erases the log entries outside the epoch."
-	 )
-       .create())
-
-   .addOption(
-     new Option("?", HELP_COMMAND, false, "Prints this help and exits"));
-
- @SuppressWarnings("static-access")
- private static final Options OPTIONS = new Options()
-
-   .addOption(
-     new Option(null, CREATE_OPTION, false,
-       "Creates a shared storage at designated location"))
-
-   .addOption(
-     OptionBuilder.withLongOpt(SAVE_OPTION).hasArg().withArgName("file")
-       .withDescription(
-	 "Writes output to a file. Use this option in conjunction with --"
-	   + RESTORE_COMMAND + " command to restore file to a different location. With"
-	   + " commands that display lists or other information, this option redirects"
-	   + " the output and suppresses (some) console formatting.")
-	   .create('o'))
-
-   .addOption(
-     OptionBuilder.withLongOpt(NOSYNC_OPTION).withDescription(
-       "Disables automatic synchronization of the current replica."
-	 + " Use this option when you want to do additional setup before"
-	 + " using the replica, or to change settings without synchronizing.")
-       .create('N'))
-
-   .addOption(
-     OptionBuilder
-       .withLongOpt(ENCRYPT_OPTION)
-       .hasOptionalArgs()
-       .withArgName("key-source")
-       .withDescription(
-	 "Tells data-bag to use encryption when creating or opening the shared store."
-	 + " To enable encryption on a shared medium, use this option when"
-	 + " you create a store with --" + CREATE_OPTION + " switch."
-	 + " Once a store is encrypted, the key and cipher remain fixed."
-	 + " You have to include --" + ENCRYPT_OPTION + " option with the same key and"
-	 + " cipher every time you use that store. To change encryption parameters,"
-	 + " use the org.h2.tools.ChangeFileEncryption utility included"
-	 + " with the data-bag distribution. That utility also allows you to encrypt or"
-	 + " decrypt an existing store. You can place the encryption key on the"
-	 + " command line, have it read from standard input, or enter it"
-	 + " interactively when data-bag starts."
-	 + " An optional argument that follows --" + ENCRYPT_OPTION + " selects"
-	 + " an encryption key or its source. If that argument is the word 'key', data-bag"
-	 + " will use the next command line argument as the key."
-//	 + " The 'file' argument value followed by a file"
-//	 + " name tells data-bag to read the encryption key from that file. Since the encryption key"
-//	 + " is read as plain text, you have to make sure that access to that file is restricted."
-//	 + " You may want to store the key file in an encrypted format if your system supports that."
-//	 + " Data-bag will use the entire file as a password string, including all end-of-line sequences"
-//	 + " in it."
-	 + " If you enter the 'ask' string as the argument, data-bag will"
-	 + " attempt to ask you for password interactively. That only works with"
-	 + " Java 6 or newer when data-bag is run from a shell without input or output redirection."
-	 + " Finally, you may have data-bag  read the key from standard input by entering 'stdin'"
-	 + " argument. If you do that, your input will be shown on screen. By default, data-bag"
-	 + " will try to use the console and fall back to the standard input if the console"
-	 + " is unavailable."
-	 + " Regardless of how data-bag obtains the encryption key, it will not accept keys that"
-	 + " contain a space character (ASCII 32). If the password is entered interactively or"
-	 + " read from the standard input, it cannot contain end-of-line sequences either."
-	 + " You can append " + CIPHER_OPTION + " option to --" + ENCRYPT_OPTION 
-	 + " to select an encryption algorithm. Supported algorithms are AES and XTEA."
-	 + " The default cipher is AES."
-	 )
-	.create('E'))
-
-   .addOption(
-     OptionBuilder
-       .withLongOpt(FILTER_OPTION)
-       .hasOptionalArgs(2)
-       .withArgName("name")
-       .withDescription(
-	 "Selects a filter to apply to the set of files before performing "
-	   + "the requested command. Files that satisfy the filter will be processed, "
-	   + "while those that don't will be ignored. Filters apply to both local and "
-	   + "shared files. You can place "
-	   + INVERT_OPTION
-	   + " modifier following the "
-	   + "filter name to reverse the filter's effect. You can designate a"
-	   + " default filter for the current replica that will apply when no other"
-	   + " filter is selected. You do that by entering "
-	   + DEFAULT_OPTION + " modifier after the filter name."
-	   + " Replicas that do not have a default filter assigned will use the"
-	   + " filter named \"" + DEFAULT_FILTER + "\", if it exists, or the"
-	   + " built-in filter \"" + ALL_FILTER + "\" otherwise."
-	   + " Filter option is also used to designate a filter to load, display,"
-	   + " save, or delete, when applicable.")
-	.create('F'))
-
-   .addOption(
-     OptionBuilder.withLongOpt(VERBOSE_OPTION).hasOptionalArg().withArgName(
-       "level").withDescription(
-       "Runs in verbose mode, logging extra status information."
-	 + " The argument is optional. -vv makes the tool run in debug mode.")
-       .create('v'))
-
-   .addOption(
-     OptionBuilder.withLongOpt(FILE_ID_OPTION).hasArg().withArgName("file-id")
-       .withType(Number.class).withDescription(
-	 "Specifies a shared file by its numeric id."
-	 + " Use this option with commands like --" + HISTORY_COMMAND + " or --"
-	 + RESTORE_COMMAND
-	 + " to resolve ambiguity of shared file records. When a file is specified"
-	 + " by number, normal filtering rules are ignored during the file lookup.")
-	 .create())
-
-   .addOption(
-     OptionBuilder.withLongOpt(VERSION_ID_OPTION).hasArg().withArgName("version-id")
-       .withType(Number.class).withDescription(
-	 "Specifies a version of the shared file by its numeric id."
-	 + " Use this option with --" + RESTORE_COMMAND + " to restore an older"
-	 + " version of a file.")
-	 .create())
-
-   .addOption(
-     OptionBuilder.withLongOpt(AS_OF_OPTION).hasOptionalArgs(2)
-     	.withArgName("date [time]").withDescription(
-     	 "Specifies the moment in time to look up in the history of shared file(s)."
- 	 + " Use this option with --" + RESTORE_COMMAND + " to restore a local file"
-	 + " to the state known to the shared storage about a specific time in"
-	 + " the past, or the --" + UNDO_COMMAND + " to return a shared file to the"
-	 + " past state. Note that time-bound commands may produce correct results"
-	 + " only within a certain range of dates. For instance, you may not be able"
-	 + " to restore a file to a state beyond the initial synchronization time"
-	 + " or beyond the epoch if --" + PURGE_COMMAND + " has been run. Use the --"
-	 + LOG_COMMAND + " command to determine the feasible date range for a shared"
-	 + " medium. The argument must be in yyyy-mm-dd date format followed by an"
-	 + " optional hh:mm:ss[.f...] part. The optional part is a separate argument"
-	 + " on the command line. In other words, you must not escape"
-	 + " the white space between the parts of the argument."
-	 )
-	.create('a'))
-
-   .addOption(
-     OptionBuilder
-       .withLongOpt(LOAD_OPTION)
-       .hasArg()
-       .withArgName("from-file")
-       .withDescription(
-	 "Loads a filter definition from a file. Use it "
-	   + "in conjunction with --"
-	   + FILTER_OPTION
-	   + " option that specifies "
-	   + "the name of a filter to load. A file name must follow the --"
-	   + LOAD_OPTION
-	   + " option and point to a file with a valid filter definition. "
-	   + "Note that you cannot load the built-in filter \"" + ALL_FILTER
-	   + "\", but you can load the filter named \"" + DEFAULT_FILTER
-	   + "\".").create())
-
-   .addOption(
-     OptionBuilder
-       .withLongOpt(SET_OPTION)
-       .hasArgs(2)
-       .withArgName("include exclude")
-       .withDescription(
-	 "Updates a filter definition from the command line. Use it "
-	   + "in conjunction with --"
-	   + FILTER_OPTION
-	   + " option that specifies "
-	   + "the name of a filter to change. Note that you cannot "
-	   + "change the built-in filter \""
-	   + ALL_FILTER
-	   + "\", but you can change the filter named \""
-	   + DEFAULT_FILTER
-	   + "\". There must be two arguments following this option. "
-	   + "First argument is expected to list path specification patterns "
-	   + "to include in filtered results, while second argument should list the patterns "
-	   + "to exclude. Both lists must use system-dependent path delimiter "
-	   + "(for example, ':' on Unix and Mac, or ';' on Windows) to separate their elements. "
-	   + "Lists that contain spaces must be properly escaped to prevent the operating "
-	   + "system from treating them as multiple arguments. To omit one of the lists, "
-	   + "use either an empty argument or a single path delimiter. If the inclusion "
-	   + "list is omitted or empty, data-bag implies an include-all pattern.")
-       .create())
-
-   .addOption(null, NOBANNER_OPTION, false,
-     "Suppress the program output header")
-
-   .addOption(
-     OptionBuilder.withLongOpt(MEDIUM_OPTION).withDescription(
-       "Points to the shared storage location. The default is current"
-	 + " directory. Optional [path] argument points to a subdirectory"
-	 + " on shared medium that stores the database.").withArgName("root")
-       .hasOptionalArgs(2).create('d'))
-
-   .addOption(
-     OptionBuilder.withLongOpt(DEFAULT_ACTION_OPTION).hasArg().withArgName(
-       "action").withDescription(
-       "Sets the default action to take in case of version conflicts."
-	 + " Allowed values are NONE, UPDATE, and DISCARD.").create('A'))
-
-   .addOption(
-     OptionBuilder.withLongOpt(LOCAL_OPTION).hasOptionalArgs(2).withArgName(
-       "path").withDescription(
-       "Sets the root path of the local copy to work with."
-	 + " A user may create multiple local copies of the same storage and"
-	 + " synchronize them one at a time. Append " + DEFAULT_OPTION + " to"
-	 + " designate this local copy as the default for your user account.")
-       .create('C'))
-
-   .addOption(
-     OptionBuilder
-       .withLongOpt(ALLOWED_TIMESTAMP_DISCREPANCY_OPTION)
-       .hasArg()
-       .withArgName("diff")
-       .withDescription(
-	 "Sets the difference threshold for file time stamps to be considered distinct."
-	   + " Measured in milliseconds. The default is 3 seconds minus one millisecond.")
-       .create())
-
-   .addOption(
-     OptionBuilder
-       .withLongOpt(CUMULATIVE_DELTA_SIZE_OPTION)
-       .hasArg()
-       .withArgName("percentage")
-       .withDescription(
-	 "Specifies the size boundary for a cumulative delta stored in memory."
-	   + " The boundary is set as a percentage or fraction of current JVM's"
-	   + " maximum heap size. Default value of this parameter is 10%.")
-       .create())
-
-   .addOption(
-     OptionBuilder
-       .withLongOpt(DELTA_CHAIN_SIZE_OPTION)
-       .hasArg()
-       .withArgName("percentage")
-       .withDescription(
-	 "Specifies the size boundary for a chain of deltas between a file"
-	   + " image and its current version. The boundary is set as a percentage"
-	   + " or fraction of the file size. Default value of this parameter is 50%.")
-       .create())
-
-   .addOption(
-     OptionBuilder
-       .withLongOpt(COMPRESSION_OPTION)
-       .hasArg()
-       .withArgName("mode")
-       .withDescription(
-	 "Selects the compression algorithm to be used for data"
-	   + " stored on a shared medium. Supported values are NO, LZF, and DEFLATE."
-	   + " Defaults to "
-	   + Manager.DEFAULT_COMPRESSION_TYPE
-	   + ". The setting is stored"
-	   + " in the database and affects future invocations. It does not change the"
-	   + " format of existing data on shared medium.").create())
-
-   .addOption(
-     OptionBuilder
-       .withLongOpt(LOB_SIZE_OPTION)
-       .hasArg()
-       .withArgName("bytes")
-       .withType(Number.class)
-       .withDescription(
-	 "Changes the size threshold for file images and deltas that triggers their"
-	   + " storage as separate files on shared medium."
-	   + " Defaults to "
-	   + Manager.DEFAULT_LOB_THRESHOLD
-	   + ". The setting is stored"
-	   + " in the database and affects future invocations. It does not change the"
-	   + " storage strategy for existing data on shared medium.").create())
-
-   .addOption(
-     OptionBuilder
-       .withLongOpt(SCHEMA_EVOLUTION_OPTION)
-       .withDescription(
-	 "Enables schema evolution for databases created by previous versions of data-bag."
-	   + " Please remember to back up your database before using this option."
-	   + " That will help you recover from problems during the upgrade.")
-       .create())
-
-   .addOptionGroup(COMMAND_OPTION_GROUP);
 
  private static final Map<String, Parameter<?>> CONFIGURATION_OPTIONS = new HashMap<String, Parameter<?>>();
 

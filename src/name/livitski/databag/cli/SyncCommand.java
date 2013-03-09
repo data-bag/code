@@ -26,7 +26,7 @@ import name.livitski.databag.app.sync.SyncService;
 import name.livitski.databag.db.Manager;
 
 /**
- * Implements the {@link Launcher#SYNC_COMMAND synchronize command}.
+ * Implements the {@link Syntax#SYNC_COMMAND synchronize command}.
  */
 public class SyncCommand extends AbstractCommand
 {

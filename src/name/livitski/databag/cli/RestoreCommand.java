@@ -31,7 +31,7 @@ import name.livitski.databag.db.DBException;
 import name.livitski.databag.db.Manager;
 
 /**
- * Implements the {@link Launcher#RESTORE_COMMAND} restore command.
+ * Implements the {@link Syntax#RESTORE_COMMAND} restore command.
  */
 public class RestoreCommand extends PointInTimeAbstractCommand
 {
@@ -65,7 +65,7 @@ public class RestoreCommand extends PointInTimeAbstractCommand
     if (target.getCanonicalFile().equals(replicaRoot))
      throw new IllegalArgumentException("The output path '" + target
 	+ "' points to the current replica's root directory. Please omit the --"
-	+ Launcher.SAVE_OPTION + " option to restore multiple files into the current replica."
+	+ Syntax.SAVE_OPTION + " option to restore multiple files into the current replica."
 	+ " Note the different file replacement rules that apply to in-place restore.");
    }
   }

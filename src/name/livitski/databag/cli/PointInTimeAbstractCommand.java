@@ -132,7 +132,7 @@ public abstract class PointInTimeAbstractCommand extends AbstractCommand
    }
    else
     throw new IllegalArgumentException("This command requires a shared file name, a pattern, or an --"
-      + Launcher.FILE_ID_OPTION + " option.");
+      + Syntax.FILE_ID_OPTION + " option.");
   }
   if (null == fileInfo)
   {
@@ -160,8 +160,8 @@ public abstract class PointInTimeAbstractCommand extends AbstractCommand
    versionId = versionInfo.getId();
   }
   else
-   throw new IllegalArgumentException("Option --" + Launcher.VERSION_ID_OPTION
-     + " conflicts with --" + Launcher.AS_OF_OPTION + ". Please remove one of these options.");
+   throw new IllegalArgumentException("Option --" + Syntax.VERSION_ID_OPTION
+     + " conflicts with --" + Syntax.AS_OF_OPTION + ". Please remove one of these options.");
   setVersionId(versionId);
   File relativePath = versionInfo.getPathInReplica();
   String nameOption = getNameOption();
@@ -239,7 +239,7 @@ public abstract class PointInTimeAbstractCommand extends AbstractCommand
   if (null != conflictingNumbers)
    throw new IllegalArgumentException("Name '" + getNameOption()
     + "' matches multiple files (##" + conflictingNumbers + "). Please use the --"
-    + Launcher.FILE_ID_OPTION + " option to resolve this ambiguity.");
+    + Syntax.FILE_ID_OPTION + " option to resolve this ambiguity.");
   if (null != fileRecords)
   {
    try
@@ -257,10 +257,10 @@ public abstract class PointInTimeAbstractCommand extends AbstractCommand
  protected void blockFileAndVersionIds(String legend)
  {
   if (null != getFileId())
-   throw new IllegalArgumentException("Option --" + Launcher.FILE_ID_OPTION
+   throw new IllegalArgumentException("Option --" + Syntax.FILE_ID_OPTION
      + " is not allowed when " + legend + ".");
   if (null != getVersionId())
-   throw new IllegalArgumentException("Option --" + Launcher.VERSION_ID_OPTION
+   throw new IllegalArgumentException("Option --" + Syntax.VERSION_ID_OPTION
      + " is not allowed when " + legend + ".");
  }
 
