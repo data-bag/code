@@ -41,8 +41,8 @@ public class CumulativeDeltaTest
     delta.common.add(new CumulativeDelta.CommonFragment(0L, 0L, 0L, null));
    System.gc();
    long after = rt.totalMemory() - rt.freeMemory();
-   Assert.assertEquals("Estimated common fragment size",
-     (after - before)/(float)count, CumulativeDelta.COMMON_INSTANCE_SIZE_ESTIMATE, 13F);
+   Assert.assertEquals("Estimated common fragment size", CumulativeDelta.COMMON_INSTANCE_SIZE_ESTIMATE,
+     (after - before)/(float)count, 13F);
   }
  }
 
@@ -59,7 +59,8 @@ public class CumulativeDeltaTest
    System.gc();
    long after = rt.totalMemory() - rt.freeMemory();
    Assert.assertEquals("Estimated forward fragment size",
-     (after - before)/(float)count, CumulativeDelta.DIRECTIONAL_INSTANCE_SIZE_ESTIMATE, 23F);
+     CumulativeDelta.DIRECTIONAL_INSTANCE_SIZE_ESTIMATE,
+     (after - before)/(float)count, 23F);
   }
  }
 

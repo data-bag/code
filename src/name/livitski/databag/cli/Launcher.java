@@ -108,9 +108,12 @@ public class Launcher extends Logging
   {
    tool.log().severe(e.getMessage());
    showHelpHint();
+   System.exit(Status.SYNTAX.getCode());
   }
   if (null != tool.getOptions())
    tool.run();
+  if (Status.OK != tool.getStatus())
+   System.exit(tool.getStatus().getCode());
  }
 
  public DropType getDropType()
@@ -411,6 +414,7 @@ public class Launcher extends Logging
  {
   try
   {
+   setStatus(Status.OK);
    if (!hasOption(NOBANNER_OPTION))
     banner();
    Level requestedLogLevel = getRequestedLogLevel();
@@ -672,10 +676,12 @@ public class Launcher extends Logging
     }
     else
      log().log(Level.SEVERE, outdated.getMessage(), outdated);
+    setStatus(Status.OBSOLETE);
    }
    catch (Exception ex)
    {
     log().log(Level.SEVERE, ex.getMessage(), ex);
+    setStatus(Status.RUNTIME);
    }
    finally
    {
@@ -699,10 +705,20 @@ public class Launcher extends Logging
   }
  }
 
+ public Status getStatus()
+ {
+  return status;
+ }
+
  public static final String LOCATOR_PROPERTIES_FILE = ".databag";
  public static final String LEGACY_LOCATOR_PROPERTIES_FILE = ".tote";
 
  public static final String DEFAULT_LOCATOR_PROPERTY = "database.default";
+
+ protected void setStatus(Status status)
+ {
+  this.status = status;
+ }
 
  protected static void showHelpHint()
  {
@@ -1446,6 +1462,41 @@ public class Launcher extends Logging
   KEY, ASK, STDIN
  };
 
+ /**
+  * Exit codes returned from {@link ProcessFile#main(String[]) this class}. 
+  */
+ public enum Status
+ {
+  /** Successful completion. */
+  OK,
+  /** Invalid command line syntax. */
+  SYNTAX,
+  /** Runtime error. */
+  RUNTIME,
+  /** Obsolete schema found - {@link Syntax#SCHEMA_EVOLUTION_OPTION database upgrade} needed. */
+  OBSOLETE,
+  /* TODO: Add error codes here */
+  /** Internal error. */
+  INTERNAL(-1);
+
+  public int getCode()
+  {
+   return code;
+  }
+
+  Status()
+  {
+   code = ordinal();
+  }
+
+  Status(int code)
+  {
+   this.code = code;
+  }
+
+  private int code;
+ }
+
  private static final Map<String, Parameter<?>> CONFIGURATION_OPTIONS = new HashMap<String, Parameter<?>>();
 
  private static final Map<Class<?>, Converter<?>> SIMPLE_CONVERTERS = new HashMap<Class<?>, Converter<?>>();
@@ -1528,6 +1579,8 @@ public class Launcher extends Logging
  private Configuration config;
 
  private PrintStream out;
+
+ private Status status = Status.INTERNAL;
 
  private interface Converter<T>
  {

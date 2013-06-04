@@ -49,7 +49,7 @@ public class LastSyncDAO extends AbstractDAO
   * @param replica represents the replica being synchronized  
   * @param version represents the file version materialized in that replica 
   * @throws DBException if there is a problem updating the database
-  */ // Q01LSV01
+  */
  public void recordSync(final ReplicaDTO replica, final VersionDTO version)
 	throws DBException
  {
@@ -121,7 +121,7 @@ public class LastSyncDAO extends AbstractDAO
   * storage.  
   * @param version version record to unlink
   * @throws DBException if there is a problem updating the database
-  */ //	Q05LSV03
+  */
  public void unlinkVersion(final VersionDTO version)
 	throws DBException
  {
@@ -226,7 +226,7 @@ public class LastSyncDAO extends AbstractDAO
   * @return synchronization record or <code>null</code> if one
   * does not exist 
   * @throws DBException if there is a problem querying the database
-  */ //	Q03LSV04
+  */
  public LastSyncDTO findRecord(final long fileId, final ReplicaDTO replica)
 	throws DBException
  {
@@ -283,7 +283,7 @@ public class LastSyncDAO extends AbstractDAO
   * @return <code>true</code> if the synchronization record exists,
   * <code>false</code> otherwise 
   * @throws DBException if there is a problem querying the database
-  */ //	Q01LSV05
+  */
  public boolean existsRecord(final long fileId, final ReplicaDTO replica)
 	throws DBException
  {
