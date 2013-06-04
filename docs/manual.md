@@ -915,7 +915,8 @@ modified before the beginning of an [epoch][]. The *epoch* argument
 has the `yyyy-mm-dd` format followed by an optional `hh:mm:ss[.f...]`
 part. The optional part is a separate argument on the command line. In
 other words, you must not escape the white space between the parts of
-the epoch argument. This command also purges the log of operations with
+the epoch argument. When run with the built-in [filter][] `"all"`, this
+command also purges the log of operations with
 the bag prior to the new [epoch][].
 
 <h4 id="switch-restore">-r, --restore</h4><a name="switch-restore"> </a>

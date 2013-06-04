@@ -31,6 +31,8 @@ import java.util.logging.Logger;
 
 import name.livitski.databag.app.ConfigurableService;
 import name.livitski.databag.app.Configuration;
+import name.livitski.databag.app.filter.FilterFactory;
+import name.livitski.databag.app.filter.FilterSpec;
 import name.livitski.databag.app.filter.PathFilter;
 import name.livitski.databag.app.info.Statistics;
 import name.livitski.databag.app.sync.ImageBuilder;
@@ -84,7 +86,9 @@ public class Cleaner extends ConfigurableService implements Closeable
   try
   {
    cleanFiles();
-   cleanSyncLog();
+   FilterSpec filter = getEffectiveFilterSpec();
+   if (!filter.isInverted() && FilterFactory.ALL_FILTER.equals(filter.getName()))
+    cleanSyncLog();
   }
   catch (Throwable fault)
   {
