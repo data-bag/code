@@ -10,7 +10,7 @@ Please read file [`NOTICE.md`][NOTICE] or browse
 
 _This manual is a work in progress._ 
 
-_Last modified: March, 8 2013_
+_Last modified: June, 4 2013_
 
 * * *
 
