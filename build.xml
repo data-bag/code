@@ -176,7 +176,7 @@
 			<map from="${dist.md.tmp.path}/" to="" />
 			<fileset dir="${dist.md.tmp.path}" />
 		</pathconvert>
-		<java jar="${lib.dir}/building/txtmark.jar" fork="true" failonerror="true" dir="${dist.md.tmp.path}">
+		<java jar="${lib.dir}/building/txtmark-files.jar" fork="true" failonerror="true" dir="${dist.md.tmp.path}">
 			<arg value="${mdconvert.target.location}" />
 			<arg line="${dist.md.files}" />
 			<sysproperty key="name.livitski.tools.txtmark.encoding" value="${docfiles.encoding}" />
