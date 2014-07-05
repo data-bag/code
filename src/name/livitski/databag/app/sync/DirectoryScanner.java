@@ -118,21 +118,23 @@ public class DirectoryScanner
   File canonical = dir.getCanonicalFile();
   if (!ancestorPaths.add(canonical))
   	return;
-  for (String name : dir.list())
-  {
-   File path = new File(parent, name);
-   splitPath.add(name);
-   if (new File(dir, name).isDirectory())
-    scanPaths(path.getPath());
-   else
+  final String[] list = dir.list();
+  if (null != list)
+   for (String name : list)
    {
-    String[] splitPathArray = splitPath.toArray(DUMMY_ARRAY);
-    if ((null == pattern || pattern.pathMatches(splitPathArray))
-    && (null == filter || filter.pathMatches(splitPathArray)))
-     paths.add(path);
+    File path = new File(parent, name);
+    splitPath.add(name);
+    if (new File(dir, name).isDirectory())
+     scanPaths(path.getPath());
+    else
+    {
+     String[] splitPathArray = splitPath.toArray(DUMMY_ARRAY);
+     if ((null == pattern || pattern.pathMatches(splitPathArray))
+     && (null == filter || filter.pathMatches(splitPathArray)))
+      paths.add(path);
+    }
+    splitPath.remove(splitPath.size() - 1);
    }
-   splitPath.remove(splitPath.size() - 1);
-  }
   ancestorPaths.remove(canonical);
  }
 
