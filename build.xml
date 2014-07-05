@@ -35,7 +35,7 @@
 	<property name="distfiles.dir" location="${basedir}/${distfiles.dir.rel}" />
 	<property name="classes.main" value="name.livitski.databag.cli.Launcher" />
 	<property name="git.gitignore.file" location="${basedir}/.gitignore" />
-	<property name="author" value="Konstantin Livitski" />
+	<property name="author" value="Stan Livitski" />
 	<property name="dist.rel" value="databag-${version}.zip" />
 	<property name="web.path" location="${basedir}" />
 	<property name="web.downloads.rel" value="downloads" />
