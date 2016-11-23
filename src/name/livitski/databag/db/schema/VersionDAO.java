@@ -1,5 +1,5 @@
 /**
- *  Copyright 2010-2013 Konstantin Livitski
+ *  Copyright 2010-2013, 2016 Stan Livitski
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the Data-bag Project License.
@@ -44,6 +44,7 @@ import name.livitski.databag.db.PreparedStatementCursor;
 import name.livitski.databag.db.PreparedStatementHandler;
 import name.livitski.databag.db.SchemaUpgrades;
 import name.livitski.databag.db.SimpleTopography;
+import name.livitski.databag.diff.Delta;
 import name.livitski.databag.diff.Delta.Type;
 
 /**
@@ -286,7 +287,7 @@ public class VersionDAO extends AbstractDAO
  }
 
  /**
-  * Returns direct descendants of a version in its file's version tree.
+  * Return direct descendants of a version in its file's version tree.
   * @param obj version to search for descendants of 
   * @return cursor over the derived versions
   */
@@ -299,7 +300,7 @@ public class VersionDAO extends AbstractDAO
  }
 
  /**
-  * Identify versions of files with name N that have size S and
+  * Fetch versions of files with a specific name and size that
   * were modified between T-d and T+d, where d is the permissible range of
   * local clock discrepancies.
   * @param modifiedAt version timestamp in
@@ -326,6 +327,39 @@ public class VersionDAO extends AbstractDAO
    else
     throw (RuntimeException)e;
   }
+ }
+
+ /**
+  * Fetch versions of files with a specific name that were modified
+  * within a specific time range.
+  * @param onOrAfter beginning of the time frame or <code>null</code> to
+  * assume negative infinity. Versions modified precisely at this time will be
+  * included in results.
+  * @param before end of the time frame or <code>null</code> to assume
+  * positive infinity. Versions modified precisely at this time will be
+  * excluded from results.
+  */
+ public Cursor<VersionDTO> findVersions(
+   NodeNameDTO name, Timestamp onOrAfter, Timestamp before
+ )
+   throws DBException
+ {
+    SelectionIterator it = new SelectionIterator(mgr);
+    it.filterByName(name.getId());
+    it.filterByTimestamp(onOrAfter, before);
+    try
+    {
+     it.execute();
+     return it;
+    }
+    catch (Exception e)
+    {
+     it.close();
+     if (e instanceof DBException)
+      throw (DBException)e;
+     else
+      throw (RuntimeException)e;
+    }
  }
 
  /**
@@ -359,7 +393,6 @@ public class VersionDAO extends AbstractDAO
      "Found invalid " + file + " with unknown or non-existent current version.");
   return currentVersion;
  }
-
 
  /**
   * Returns information record for the most recent version of a
@@ -445,13 +478,12 @@ public class VersionDAO extends AbstractDAO
  }
 
  /**
-  * Retrieve a delta stream for differences between a version
-  * and its base version, if available.
-  * You must close the returned stream after using it.
+  * Retrieve the length of a delta stream for differences between
+  * a version and its base version, if available.
   * @param version version record
   * @param type type of the delta to retrieve
-  * @return delta input stream or <code>null</code> if the
-  * supplied version stores no delta of that type
+  * @return length of the input stream in bytes, or <code>0</code>
+  * if the supplied version stores no delta of that type
   */
  public long retrieveDeltaSize(final VersionDTO version, final Type type)
  	throws DBException
@@ -475,6 +507,47 @@ public class VersionDAO extends AbstractDAO
    protected String legend()
    {
     return "retrieving " + type.toString().toLowerCase() + " delta size " + " of " + version;
+   }
+  }.execute();
+  return holder[0];
+ }
+
+ /**
+  * Retrieve the length of all delta streams that capture differences
+  * between a version and its base version, if available.
+  * @param version version record
+  * @return array of delta streams' lengths in bytes arranged as the
+  * {@link java.lang.Enum#ordinal() ordinals} of respective
+  * {@link Delta.Type} constants, or a <code>null</code> value
+  * if the supplied version has no base, or is stored as a complete
+  * file image. Elements of the returned array may be <code>0</code>
+  * if the supplied version stores no delta of that type
+  */
+ public long[] retrieveDeltaSizes(final VersionDTO version)
+ 	throws DBException
+ {
+  final long[][] holder = new long[1][];
+  new PKStatement(mgr, RETRIEVE_DELTA_LENGTHS_SQL)
+  {
+   { setVersion(version); }
+
+   @Override
+   protected void handleResults(ResultSet rs) throws SQLException, DBException
+   {
+    final Delta.Type[] types = Delta.Type.values();
+    if (rs.next())
+    {
+     holder[0] = new long[types.length];
+     int i = 0;
+     for (Delta.Type type : types)
+      holder[0][type.ordinal()] = rs.getLong(++i); 
+    }
+   }
+
+   @Override
+   protected String legend()
+   {
+    return "retrieving delta sizes " + " of " + version;
    }
   }.execute();
   return holder[0];
@@ -996,9 +1069,10 @@ public class VersionDAO extends AbstractDAO
  
   public void filterBySize(long size)
   {
+   this.sql = FIND_MATCHING_SQL;
    sizeFilter = size;
   }
- 
+  
   public void filterByTimestamp(long timestamp, long range)
   {
    timestampFrom = new Timestamp(timestamp - range);
@@ -1006,22 +1080,40 @@ public class VersionDAO extends AbstractDAO
    timestampTo.setNanos(timestampTo.getNanos() / 1000000 * 1000000 + 999999);
   }
   
+  public void filterByTimestamp(Timestamp from, Timestamp to)
+  {
+   timestampFrom = from;
+   timestampTo = to;
+  }
+  
   public SelectionIterator(Manager mgr)
   {
-   super(mgr, FILTER_SQL);
+   super(mgr, BYNAME_MODIFIED_WITHIN_SQL);
   }
  
   @Override
   protected void bindParameters(PreparedStatement stmt) throws SQLException
   {
-   // TODO: use different queries if there are nulls
-   if (null == nameFilter || null == sizeFilter || null == timestampFrom || null == timestampTo)
-    throw new IllegalStateException("Required filter(s) not set for query '" + sql + "'");
-   stmt.setLong(1, nameFilter);
-   stmt.setLong(2, nameFilter);
-   stmt.setLong(3, sizeFilter);
-   stmt.setTimestamp(4, timestampFrom);
-   stmt.setTimestamp(5, timestampTo);
+   if (null == nameFilter)
+    throw new IllegalStateException("Name filter is not set when matching versions");
+   else if (null == sizeFilter)
+   {
+    stmt.setLong(1, nameFilter);
+    stmt.setTimestamp(2, timestampFrom);
+    stmt.setTimestamp(3, timestampFrom);
+    stmt.setTimestamp(4, timestampTo);
+    stmt.setTimestamp(5, timestampTo);
+   }
+   else if (null == timestampFrom || null == timestampTo)
+    throw new IllegalStateException("Time bounds are not set when matching versions");
+   else
+   {
+    stmt.setLong(1, nameFilter);
+    stmt.setLong(2, nameFilter);
+    stmt.setLong(3, sizeFilter);
+    stmt.setTimestamp(4, timestampFrom);
+    stmt.setTimestamp(5, timestampTo);
+   }
   }
  
   /* (non-Javadoc)
@@ -1229,6 +1321,41 @@ public class VersionDAO extends AbstractDAO
  
   private Boolean result;
   private Timestamp epoch;
+ }
+
+ protected static class FileNameProbeByModTime extends FileDAO.NameProbe 
+ {
+  public FileNameProbeByModTime(Manager db)
+  {
+   super(db);
+   sql = TEST_FILE_BYNAME_MODIFIED_BETWEEN_SQL;
+  }
+  
+  public void setChangeTimeFrame(Timestamp changedOnOrAfter, Timestamp changedBefore)
+  {
+   this.changedOnOrAfter = changedOnOrAfter;
+   this.changedBefore = changedBefore;
+  }
+
+  @Override
+  protected void bindParameters(PreparedStatement stmt) throws SQLException
+  {
+   super.bindParameters(stmt);
+   stmt.setTimestamp(2, changedOnOrAfter);
+   stmt.setTimestamp(3, changedOnOrAfter);
+   stmt.setTimestamp(4, changedBefore);
+   stmt.setTimestamp(5, changedBefore);
+  }
+
+  @Override
+  protected String legend()
+  {
+   return "probing file with name id " + getNameId()
+     + " for changes made between " + changedOnOrAfter
+     + " and " + changedBefore;
+  }
+
+  private Timestamp changedOnOrAfter, changedBefore;
  }
 
  protected static class Deleter extends PKStatement
@@ -1525,7 +1652,7 @@ public class VersionDAO extends AbstractDAO
  /**
   * DAO classes of schema elements that this table depends on. 
   */
- @SuppressWarnings("unchecked")
+ @SuppressWarnings("rawtypes")
  protected static final Class[] DEPENDENCIES = new Class[] { NodeNameDAO.class, FileDAO.class };
 
  protected static final int SCHEMA_VERSION = 2;
@@ -1666,6 +1793,14 @@ public class VersionDAO extends AbstractDAO
   + " WHERE v.id IS NULL AND c.size IS NOT NULL";
 
  /**
+  * SQL statement for checking if there are any files with specific name.
+  */
+ protected static final String TEST_FILE_BYNAME_MODIFIED_BETWEEN_SQL =
+  "SELECT EXISTS (SELECT * FROM " + TABLE_NAME + " v JOIN " + FileDAO.TABLE_NAME
+  + " f ON v.file=f.id WHERE f." + FileDAO.NAME_FIELD_NAME
+  + " = ? AND (v.modified >= ? OR ? IS NULL) AND (v.modified < ? OR ? IS NULL))";
+
+ /**
   * SQL statement for finding obsolete versions of a particular file
   * for a specific epoch.
   */
@@ -1733,13 +1868,24 @@ public class VersionDAO extends AbstractDAO
   " FROM " + TABLE_NAME + " WHERE file = ? AND derived = ?";
 
  /**
-  * SQL statement for loading version objects.
+  * SQL statement for loading version objects matching name, time, and size criteria.
   */
- protected static final String FILTER_SQL =
+ protected static final String FIND_MATCHING_SQL =
   "SELECT " + PREFIXED_DATA_FIELDS_WITH_ID +
-  " FROM " + TABLE_NAME + " v JOIN File f ON v.file=f.id" +
+  " FROM " + TABLE_NAME + " v JOIN " + FileDAO.TABLE_NAME + " f ON v.file=f.id" +
   " WHERE (v.name = ? OR (v.name IS NULL AND f.name = ?)) AND v.size = ?" +
   "  AND v.modified >= ? AND v.modified <= ?";
+// NOTE: cannot do "  AND (v.modified >= ? OR ? IS NULL) AND (v.modified <= ? OR ? IS NULL)";
+// for open-ended time ranges - this is VERY SLOW with H2
+
+ /**
+  * SQL statement for loading version objects matching name, within a time range.
+  */
+ protected static final String BYNAME_MODIFIED_WITHIN_SQL =
+  "SELECT " + PREFIXED_DATA_FIELDS_WITH_ID + " FROM "
+  + TABLE_NAME + " v JOIN " + FileDAO.TABLE_NAME
+  + " f ON v.file=f.id WHERE f." + FileDAO.NAME_FIELD_NAME
+  + " = ? AND (v.modified >= ? OR ? IS NULL) AND (v.modified < ? OR ? IS NULL)";
 
  /**
   * SQL statement for loading information about versions with a specific name.
@@ -1824,7 +1970,22 @@ public class VersionDAO extends AbstractDAO
   "SELECT %cdelta FROM " + TABLE_NAME + " WHERE file = ? AND id = ?";
 
  /**
-  * SQL statement template for retrieving delta LOB lengths.
+  * SQL statement template for retrieving all delta LOB lengths.
+  */
+ protected static final String RETRIEVE_DELTA_LENGTHS_SQL;
+ static 
+ {
+  final StringBuilder sql = new StringBuilder(1000);
+  sql.append("SELECT ");
+  for (Delta.Type type : Delta.Type.values())
+   sql.append(String.format("LENGTH(%cdelta),", Character.toLowerCase(type.toString().charAt(0))));
+  sql.setLength(sql.length() - 1); // remove the trailing comma
+  sql.append(" FROM ").append(TABLE_NAME).append(" WHERE file = ? AND id = ?");
+  RETRIEVE_DELTA_LENGTHS_SQL = sql.toString();
+ }
+
+ /**
+  * SQL statement template for retrieving a specific delta LOB length.
   */
  protected static final String RETRIEVE_DELTA_LENGTH_SQL =
   "SELECT LENGTH(%cdelta) FROM " + TABLE_NAME + " WHERE file = ? AND id = ?";

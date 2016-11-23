@@ -1,5 +1,5 @@
 /**
- *  Copyright 2010-2013 Konstantin Livitski
+ *  Copyright 2010-2014 Stan Livitski
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the Data-bag Project License.
@@ -34,14 +34,14 @@ public class ScriptRunner extends StatementHandler
 
  @Override
  protected void handleStatement(Statement stmt)
- 	throws SQLException
+ 	throws SQLException, DBException
  {
   this.stmt = stmt;
   runScript(Arrays.asList(script));
   this.stmt = null;
  }
 
- private void runScript(Iterable<?> script) throws SQLException
+ private void runScript(Iterable<?> script) throws SQLException, DBException
  {
   for (Object item : script)
   {
@@ -51,6 +51,8 @@ public class ScriptRunner extends StatementHandler
     log().finest(sql);
     stmt.execute(sql);
    }
+   else if (item instanceof StatementHandler && this != item)
+    ((StatementHandler)item).execute();
    else if (item instanceof Iterable<?>)
     runScript((Iterable<?>)item);
    else if (item instanceof Object[])

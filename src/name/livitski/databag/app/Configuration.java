@@ -1,5 +1,5 @@
 /**
- *  Copyright 2010-2013 Konstantin Livitski
+ *  Copyright 2010-2013, 2016 Stan Livitski
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the Data-bag Project License.
@@ -76,7 +76,7 @@ public class Configuration
  /**
   * Creates a configuration object with default settings.
   */
- @SuppressWarnings("unchecked")
+ @SuppressWarnings({"unchecked", "rawtypes"})
  public Configuration()
  {
   settings = new HashMap(PARAMETERS.length, 1F);
@@ -88,7 +88,7 @@ public class Configuration
   * Creates a configuration object with user settings.
   * @param user the map with configuration settings
   */
- @SuppressWarnings("unchecked")
+ @SuppressWarnings({ "unchecked", "rawtypes" })
  public Configuration(Map<Parameter<?>, Object> user)
  {
   settings = new HashMap(PARAMETERS.length, 1F);

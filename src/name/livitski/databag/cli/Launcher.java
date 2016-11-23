@@ -569,7 +569,14 @@ public class Launcher extends Logging
      switch (type)
      {
      case FILES:
-      listFiles();
+      final String[] args = options.getOptionValues(LIST_COMMAND);
+      String[] predicate = null;
+      if (null != args && 1 < args.length)
+      {
+       predicate = new String[args.length - 1];
+       System.arraycopy(args, 1, predicate, 0, predicate.length);
+      }
+      listFiles(predicate);
       break;
      case REPLICAS:
       if (hasFilterOption())
@@ -1037,8 +1044,11 @@ public class Launcher extends Logging
   if (null != args)
   {
    if (args.length > 2)
-    throw new IllegalArgumentException("Extra argument to --" + LOG_COMMAND
-      + ": " + args[2]);
+   {
+    log().severe("Extra argument to --" + LOG_COMMAND + ": " + args[2]);
+    setStatus(Status.SYNTAX);
+    return;
+   }
    for (int i = 0; args.length > i; i++)
    {
     String[] parts = args[i].split("\\s");
@@ -1236,15 +1246,42 @@ public class Launcher extends Logging
   */
  private static final String HISTORY_HEADER_REQUIRED_PREFIX = "%n=== File # %d with name '%s'";
 
- protected void listFiles() throws DBException
+ protected void listFiles(final String[] args) throws DBException
  {
   PrintStream out = getOutputStream();
   SharedFiles query = new SharedFiles(db, getConfiguration());
+  ListFilesPredicate predicate = null;
+  Timestamp[] limits = { null, null };
+  if (null != args && 0 < args.length)
+   try
+   {
+    predicate = ListFilesPredicate.valueOf(args[0].toUpperCase());
+    if (args.length > 3)
+     throw new IllegalArgumentException(
+       "Found extra argument(s) startwing with: " + args[3]
+     );
+    for (int i = 1; args.length > i; i++)
+    {
+     String[] parts = args[i].split("\\s");
+     limits[i - 1] = argsToTimestamp(parts, 0, LIST_COMMAND + " " + ListType.FILES);
+    }
+   }
+   catch (RuntimeException parseErr)
+   {
+    log().log(
+      Level.SEVERE,
+      "Error parsing --" + LIST_COMMAND + " " + ListType.FILES
+      + " command with arguments: " + Arrays.asList(args),
+      parseErr
+    );
+    setStatus(Status.SYNTAX);
+    return;
+   }
   log().info("Applying " + query.getEffectiveFilterSpec());
   Cursor<File> list = null;
   try
   {
-   list = query.listPaths();
+   list = query.listPaths(limits[0], limits[1], predicate == ListFilesPredicate.CHANGED);
    for (File path; null != (path = list.next());)
    {
     String name = path.getPath();
@@ -1450,6 +1487,11 @@ public class Launcher extends Logging
  enum ListType
  {
   FILES, REPLICAS, FILTER, FILTERS
+ };
+
+ enum ListFilesPredicate
+ {
+  CHANGED, TOUCHED
  };
 
  enum DropType

@@ -1,5 +1,5 @@
 /**
- *  Copyright 2010-2013 Konstantin Livitski
+ *  Copyright 2010-2013, 2016 Stan Livitski
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the Data-bag Project License.
@@ -23,6 +23,7 @@ import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 import name.livitski.databag.db.AbstractDAO;
 import name.livitski.databag.db.ConstraintViolationException;
@@ -223,13 +224,33 @@ public class FileDAO extends AbstractDAO
  /**
   * Lists paths to all tracked files relative to the replica root.
   * The paths are arranged in a depth-first sequence. Within each
-  * folder, entries are ordered lexicographically by their names. 
+  * folder, entries are ordered lexicographically by their names.
+  * If non-<code>null</code> arguments are passed, only files that
+  * have versions within a certain time frame will be listed. Note
+  * that some versions may be stored under their own
+  * {@link VersionDTO #getNameId() historic names}. This method 
+  * does not list such names when they differ from the names of
+  * versions' files.
+  * @param changedOnOrAfter beginning of the time frame or <code>null</code> to
+  * assume negative infinity. Files changed precisely at this time will be
+  * included in results.
+  * @param changedBefore end of the time frame or <code>null</code> to assume
+  * positive infinity. Files changed precisely at this time will be
+  * excluded from results.
   */
- public Cursor<PathEntry> listPaths()
+ public Cursor<PathEntry> listPaths(Timestamp changedOnOrAfter, Timestamp changedBefore)
 	throws DBException
  {
   final NodeNameDAO nameDAO = mgr.findDAO(NodeNameDAO.class);
-  final NameProbe probe = new NameProbe();
+  final NameProbe probe;
+  if (null == changedOnOrAfter && null == changedBefore) 
+   probe = new NameProbe(mgr);
+  else
+  {
+   probe = new VersionDAO.FileNameProbeByModTime(mgr);
+   ((VersionDAO.FileNameProbeByModTime)probe).setChangeTimeFrame(
+     changedOnOrAfter, changedBefore);
+  }
   final Cursor<Long> cursor = new FilteredCursor<Long>(
     nameDAO.new DFSIterator(),
     new Filter<Long>() {
@@ -249,12 +270,9 @@ public class FileDAO extends AbstractDAO
 
    public PathEntry next() throws DBException
    {
-    Long nextId = cursor.next();
-    if (null == nextId)
-     return null; 
-    final String[][] splitPathRef = { null };
-    final File path = nameDAO.toLocalFile(nextId, splitPathRef);
-    return new PathEntry()
+    final Long nameId = cursor.next();
+
+    return null == nameId ? null : new PathEntry()
     {
      public String[] getSplitPath()
      {
@@ -265,6 +283,15 @@ public class FileDAO extends AbstractDAO
      {
       return path;
      }
+
+     public NodeNameDTO getNodeName()
+       throws DBException
+     {
+      return nameDAO.find(nameId);
+     }
+
+     String[][] splitPathRef = { null };
+     File path = nameDAO.toLocalFile(nameId, splitPathRef);
     }; 
    }
   };
@@ -441,6 +468,8 @@ public class FileDAO extends AbstractDAO
  {
   File getPath();
   String[] getSplitPath();
+  NodeNameDTO getNodeName()
+    throws DBException;
  }
 
  @Override
@@ -462,11 +491,16 @@ public class FileDAO extends AbstractDAO
   super(mgr);
  }
 
- protected class NameProbe extends PreparedStatementHandler
+ protected static class NameProbe extends PreparedStatementHandler
  {
   public boolean isFound()
   {
    return found;
+  }
+
+  public long getNameId()
+  {
+   return nameId;
   }
 
   public void setNameId(long nameId)
@@ -475,9 +509,9 @@ public class FileDAO extends AbstractDAO
    found = false;
   }
 
-  public NameProbe()
+  public NameProbe(Manager db)
   {
-   super(FileDAO.this.mgr, TEST_BYNAME_SQL);
+   super(db, TEST_BYNAME_SQL);
   }
 
   @Override
@@ -639,7 +673,7 @@ public class FileDAO extends AbstractDAO
  /**
   * DAO classes of schema elements that this table depends on. 
   */
- @SuppressWarnings("unchecked")
+ @SuppressWarnings("rawtypes")
  protected static final Class[] DEPENDENCIES = new Class[] { NodeNameDAO.class };
 
  protected static final int SCHEMA_VERSION = 2;

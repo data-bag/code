@@ -331,7 +331,7 @@ public class Syntax
        .create())
 
    .addOption(
-     OptionBuilder.withLongOpt(LIST_COMMAND).hasOptionalArg()
+     OptionBuilder.withLongOpt(LIST_COMMAND).hasOptionalArgs()
      	.withArgName("")
      	.create('l'))
 

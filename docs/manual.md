@@ -2,15 +2,13 @@
 _Data-bag_ manual
 =================
 
-<small>Copyright &copy; 2010-2013 Konstantin Livitski. License terms apply.
+<small>Copyright &copy; 2010-2013, 2016 Stan Livitski. License terms apply.
 Please read file [`NOTICE.md`][NOTICE] or browse
 <http://www.livitski.name/projects/data-bag/license> for details.</small>
 
 * * *
 
 _This manual is a work in progress._ 
-
-_Last modified: June, 4 2013_
 
 * * *
 
@@ -78,24 +76,17 @@ the Java runtime command:
 	$ java -jar /mnt/databag.jar
 
 Initially, there is no [bag][] for _data-bag_ to work with, and the tool
-informs you of that and prints its usage summary:
+informs you of that and suggests adding `--help` to the command line
+to display the usage syntax:
 
->     Data-bag: file synchronization, backup, and change tracking tool, v.1.05.130122
->     Copyright 2010-13 Konstantin Livitski and others.
+>     Data-bag: file synchronization, backup, and change tracking tool, v.1.07.161026
+>     Copyright 2010-2014,2016 Stan Livitski and others.
 >     See file "LICENSE/data-bag.md" for applicable terms,
 >      http://data-bag.org to learn more about the project.
 >
->     Jan 21, 2013 6:50:45 PM name.livitski.databag.cli.Launcher run
->     WARNING: Shared storage not found on /home/user
->     Usage:
->                 java -jar databag.jar [options] command [arguments]
->
->     Common options:
->     [-d medium] [--create] [-C path [--default]] [-A action]
->     [--fn file-id] [--vn version-id] [-o output-file] [-N]
->     [-F filter-name [--default | --invert]] [-v] [database-options]
->     Command: -? | -l | -h | -r | --drop | --log | --purge | [-s]
-> .....
+>     Oct 31, 2016 2:54:11 PM name.livitski.databag.cli.Launcher run
+>     WARNING: Could not find a bag on "/home/user", giving up.
+>     To find out more about data-bag's syntax, run it with --help switch.
 
 To create a [bag][] in the current directory, add the [`--create` option][--create]
 to the previous command line. To work with a medium at another location, add the
@@ -106,15 +97,15 @@ to the previous command line. To work with a medium at another location, add the
 Given this command line, _data-bag_ will create a [bag][] and tell you
 that there is no local [replica][] defined for your user account:
 
->     Data-bag: file synchronization, backup, and change tracking tool, v.1.05.130120
->     Copyright 2010-13 Konstantin Livitski and others.
+>     Data-bag: file synchronization, backup, and change tracking tool, v.1.07.161026
+>     Copyright 2010-2014,2016 Stan Livitski and others.
 >     See file "LICENSE/data-bag.md" for applicable terms,
 >      http://data-bag.org to learn more about the project.
 > 
->     Jan 21, 2013 7:05:39 PM name.livitski.databag.db.Manager create
+>     Oct 31, 2016 7:05:39 PM name.livitski.databag.db.Manager create
 >     INFO: Created database jdbc:h2:file:/mnt/databag/databag;LOCK_MODE=1;COMPRESS_LO
 >     B=DEFLATE;MAX_LENGTH_INPLACE_LOB=3500
->     Jan 21, 2013 7:05:39 PM name.livitski.databag.cli.Launcher run
+>     Oct 31, 2016 7:05:39 PM name.livitski.databag.cli.Launcher run
 >     WARNING: Local replica of shared storage /mnt not found for user@d1.data-bag.org
 
 The [bag][] for shared medium at `/mnt/` is now stored in the `/mnt/databag/`
@@ -160,6 +151,8 @@ synchronized, i.e. added to your new [bag][].
 >     Jan 21, 2013 8:04:18 PM name.livitski.databag.app.sync.SyncService synchronize
 >     INFO: Synchronizing replica #1 for user@d1.data-bag.org at /tmp/demo with databa
 >     se at /mnt/databag using filter "all" ...
+
+<a name="synchronizing-files"> </a>
 
 ### Synchronizing files
 
@@ -215,6 +208,7 @@ command
 
 will display the log entries made on or after January, 1st 2013.
 
+<a name="commands-and-options"> </a>
 
 ### Commands and options; disabling automatic sync
 
@@ -250,6 +244,7 @@ the [`--nosync` option][--nosync] (shorthand `-N`) to the command line. For exam
 will register `/tmp/demo1` as a new replica for the [bag][], but will not
 synchronize that directory.
 
+<a name="managing-replicas"> </a>
 
 ### Managing replicas
 
@@ -433,7 +428,7 @@ _TODO: explain how to load a filter (note that --load is an option)_
 
 ### Listing the bag's contents
 
-You can list paths to all files in the [bag][] using the [`--list` command][--list]
+You can list paths to all files in a [bag][] using the [`--list` command][--list]
 (or its shorthand `-l`) followed by the `files` keyword, or without the keyword:
 
 	$ java -jar /mnt/databag.jar -d /mnt -l
@@ -448,8 +443,30 @@ You can list paths to all files in the [bag][] using the [`--list` command][--li
 
 The listing will include relative locations of both current and deleted files
 matching the current [filter][]. _Data-bag_ sends the diagnostic output (two
-lines at the top) is sent to the standard error stream. You can separate it
-from the list output by redirecting either or both output streams.
+lines at the top) to the standard error stream. You can separate it from the
+list output by redirecting either or both output streams.
+
+You may add optional arguments to `--list files` to show only files
+updated at specific times. In that case, you cannot omit the `files` keyword.
+For example,
+
+	$ java -jar /mnt/databag.jar -d /mnt -l files changed 2016-06-22 2016-07-01 
+
+will show you the files that were changed on or after June, 22nd but before
+July, 1st 2016. Only files that had their contents changed during that period
+will be listed, while files that were simply timestamped or deleted will not.
+If you want to include those files as well, enter this command:
+
+	$ java -jar /mnt/databag.jar -d /mnt -l files touched 2016-06-22 2016-07-01
+
+If you want be more precise with the period of file updates, you may enter
+the cut-off times (up to a millisecond) along with the date arguments. The
+syntax for that is the same as with the [--log][] command. You may also omit
+the second date/time argument as you do with [--log][].
+Note that _data-bag_ picks up file updates when it
+[synchronizes a bag with replicas](#synchronizing-files). Thus, a report on
+updated files will be limited in accuracy by the frequency of your bag's
+synchronizations.
 
 With the [`--list` command][--list] you can display other data records stored in a
 [bag][], such as [replicas][], [filters][], and view detailed
@@ -878,7 +895,7 @@ If you omit the *file* argument, you must enter a [file number][] on the
 command line using the [`--fn` option][--fn].
 
 <h4 id="switch-list">-l, --list</h4><a name="switch-list"> </a>
-__Syntax:__ `--list` [ *type* ]
+__Syntax:__ `--list` [ *type* [ *predicate* ] ]
 
 Lists items in the [bag][]. The case-insensitive
 argument designates the type of items that will be listed.
@@ -888,7 +905,29 @@ may be formatted to accommodate a standard terminal. If you redirect
 the output to a file with the [`--save` option][--save], it will
 contain neither the header nor the terminal formatting. With the
 `FILTER` argument, the output file is formatted to allow loading
-it into a [filter][] with the [`--load` option][--load].  
+it into a [filter][] with the [`--load` option][--load].
+
+When listing `FILES`, you may also enter a predicate upon which
+the files will be filtered. This is done in conjunction with matching
+files against the current [filter][]. _Data-bag_ currently supports
+the following file predicates:
+
+ - `CHANGED` [ *time-frame* ]
+ - `TOUCHED` [ *time-frame* ]
+
+Predicates' keywords are case-insensitive.
+Time frame arguments are parsed according to the rules of the [--log][] 
+command and compared with the modification times of file's versions.
+If there are matching versions, a file is listed, otherwise it is
+skipped. `CHANGED` picks up only versions that represent a content
+change to the file, ignoring simple timestamps and deletion markers.
+`TOUCHED` considers all version records, including deletion markers.
+Note that _data-bag_ stores new versions when it
+[synchronizes a bag with its replica](#synchronizing-files), so some
+change records may be missing from bags that are synchronized
+infrequently. Since there is no way to determine a file's deletion
+time from the file system, deletion markers are timestamped when
+deletions are detected during synchronization.
 
 <h4 id="switch-log">--log</h4><a name="switch-log"> </a>
 __Syntax:__ `--log` [ *time-frame* ]
@@ -981,7 +1020,7 @@ just one file having that name, i.e. there were no [histories][]
 of deleted or renamed files with the same name in the
 bag. Alternatively, you can specify the [file number][]
 using the [`--fn` option][--fn]. To return to the file's
-[version][] with a certain [version][version number], enter the
+[version][] with a certain [version number][version], enter the
 [`--vn` option][--vn] with that number. To return to the file's
 contents as of a specific date, enter the
 [`--as-of` option][--as-of] with that date. When reverting files

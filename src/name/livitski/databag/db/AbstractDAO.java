@@ -1,5 +1,5 @@
 /**
- *  Copyright 2010-2013 Konstantin Livitski
+ *  Copyright 2010-2014 Stan Livitski
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the Data-bag Project License.
@@ -48,10 +48,12 @@ public abstract class AbstractDAO
 
  /**
   * Returns the DDL for the current version of implementation class's
-  * database schema.
+  * database schema. This is usually an array of strings, but it may also
+  * contain other arrays, collections, and {@link StatementHandler}s.
   * @throws SQLException if there is an error interacting with database
+  * @see ScriptRunner
   */
- public abstract String[] schemaDDL();
+ public abstract Object[] schemaDDL();
 
  /**
   * Returns the oldest version number that this DAO implementation can

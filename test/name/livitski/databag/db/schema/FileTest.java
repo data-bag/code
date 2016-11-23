@@ -169,7 +169,7 @@ public class FileTest extends AbstractDBTest
  public void testList() throws Exception
  {
   FileDAO fileDAO = db.findDAO(FileDAO.class);
-  Cursor<FileDAO.PathEntry> list = fileDAO.listPaths();
+  Cursor<FileDAO.PathEntry> list = fileDAO.listPaths(null, null);
   try
   {
    int count = 0;

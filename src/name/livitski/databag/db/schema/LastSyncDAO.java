@@ -1,5 +1,5 @@
 /**
- *  Copyright 2010-2013 Konstantin Livitski
+ *  Copyright 2010-2013, 2016 Stan Livitski
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the Data-bag Project License.
@@ -389,7 +389,7 @@ public class LastSyncDAO extends AbstractDAO
  /**
   * DAO classes of schema elements that this table depends on. 
   */
- @SuppressWarnings("unchecked")
+ @SuppressWarnings("rawtypes")
  protected static final Class[] DEPENDENCIES = new Class[]
     { FileDAO.class, ReplicaDAO.class, VersionDAO.class, NodeNameDAO.class };
  

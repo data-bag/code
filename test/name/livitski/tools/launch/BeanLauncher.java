@@ -1,5 +1,5 @@
 /**
- *  Copyright 2010-2013 Konstantin Livitski
+ *  Copyright 2010-2013, 2016 Stan Livitski
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the Data-bag Project License.
@@ -338,7 +338,7 @@ public class BeanLauncher extends Logging
   }
  }
 
- @SuppressWarnings("unchecked")
+ @SuppressWarnings("rawtypes")
  static final Map<Class, Class> WRAPPER_TYPES = new HashMap<Class, Class>(8, 1f);
  {
   WRAPPER_TYPES.put(Boolean.TYPE, Boolean.class);

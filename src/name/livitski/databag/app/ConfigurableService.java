@@ -1,5 +1,5 @@
 /**
- *  Copyright 2010-2013 Konstantin Livitski
+ *  Copyright 2010-2013, 2016 Stan Livitski
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the Data-bag Project License.
@@ -187,7 +187,8 @@ public abstract class ConfigurableService extends Logging implements Closeable
  /**
   * Lazily creates an instance of {@link ImageBuilder} to be used
   * with this object. Once created, the {@link ImageBuilder} is
-  * stored for reuse since its creation is expensive. 
+  * stored for reuse since its creation may be expensive or require
+  * additional configuration. 
   */
  protected ImageBuilder getImageBuilder()
  {
